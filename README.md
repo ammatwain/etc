@@ -1,2 +1,2 @@
-# etc
+# ETC
 Equal Temperament Calculator
