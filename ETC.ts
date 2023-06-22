@@ -70,6 +70,25 @@ export class ETC {
         "Cb" :-7,"Gb" :-6,"Db" :-5,"Ab":-4,"Eb":-3,"Bb":-2,"F" :-1,"C" :0,"G" :1,"D" :2,"A"  :3,"E"  :4,"B"  :5,"F#" :6,"C#" :7,
         "Abm":-7,"Ebm":-6,"Bbm":-5,"Fm":-4,"Cm":-3,"Gm":-2,"Dm":-1,"Am":0,"Em":1,"Bm":2,"F#m":3,"C#m":4,"G#m":5,"D#m":6,"A#m":7,
     };
+    private static circleOfFifths: ETC[] = [
+        new ETC(-7),
+        new ETC(-6),
+        new ETC(-5),
+        new ETC(-4),
+        new ETC(-3),
+        new ETC(-2),
+        new ETC(-1),
+        new ETC(0),
+        new ETC(1),
+        new ETC(2),
+        new ETC(3),
+        new ETC(4),
+        new ETC(5),
+        new ETC(6),
+        new ETC(7),
+    ];
+
+    private rootKey: number = 0;
 
     public static simplifyKey(key: number): number{
         key = key % 12;
@@ -79,6 +98,22 @@ export class ETC {
             key -= 12;
         }
         return key || 0;
+    }
+
+    constructor(key: number = 0) {
+        this.rootKey = ETC.simplifyKey(key);
+    }
+
+    public get RootKey(): number {
+        return this.rootKey;
+    }
+
+    public static key(key: number): ETC {
+        return ETC.circleOfFifths[ETC.simplifyKey(key) + 7 ];
+    }
+
+    public relativeKey(keyRelation: number): ETC {
+        return ETC.key(ETC.simplifyKey(this.RootKey + keyRelation));
     }
 
     private static keyToOctave(key: number): number{
