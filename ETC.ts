@@ -35,8 +35,8 @@ export class ETC {
         diminishedOctave:   -7,
         perfectOctave:      84,
     };
-/*
-    private static cromaticsIndexArray: number[] = [
+
+    public static cromaticsIndexArray: number[] = [
         ETC.intervals.perfectUnison,
         ETC.intervals.minorSecond,
         ETC.intervals.majorSecond,
@@ -51,7 +51,7 @@ export class ETC {
         ETC.intervals.majorSeventh,
     ];
 
-    private static diatonicsIndexArray: number[] = [
+    public static diatonicsIndexArray: number[] = [
         ETC.intervals.perfectUnison,
         ETC.intervals.augmentedUnison,
         ETC.intervals.majorSecond,
@@ -65,7 +65,7 @@ export class ETC {
         ETC.intervals.augmentedSixth,
         ETC.intervals.majorSeventh,
     ];
-*/
+
     public static keyNames: any ={
         "Cb" :-7,"Gb" :-6,"Db" :-5,"Ab":-4,"Eb":-3,"Bb":-2,"F" :-1,"C" :0,"G" :1,"D" :2,"A"  :3,"E"  :4,"B"  :5,"F#" :6,"C#" :7,
         "Abm":-7,"Ebm":-6,"Bbm":-5,"Fm":-4,"Cm":-3,"Gm":-2,"Dm":-1,"Am":0,"Em":1,"Bm":2,"F#m":3,"C#m":4,"G#m":5,"D#m":6,"A#m":7,
@@ -129,6 +129,26 @@ export class ETC {
         return [ 0,7,2,9,4,11,5 ][ fundamentalNoteModule ];
     }
     public static keyToNode(key: number): ETCNode  {
+        return {
+            fundamentalNote: ETC.keyToFundamentalNote( key ),
+            alterations:  ETC.keyToAlterations( key ),
+            octave: ETC.keyToOctave( key )
+        };
+    }
+    public static simplifyIndex(key: number): number  {
+        let alterations: number = ETC.keyToAlterations(key);
+        while (Math.abs(alterations)>3 ) {
+            console.log(`semplifico ${key}? (${alterations} alterazioni)`);
+            key += Math.sign(alterations) * -7;
+            alterations = ETC.keyToAlterations(key);
+            console.log(`semplificata in  ${key}? (${alterations} alterazioni)`);
+        }
+        console.log("----------------------------------------------------");
+        return key;
+    }
+
+    public static keyToSimplifyNode(key: number): ETCNode  {
+        key = ETC.simplifyIndex(key);
         return {
             fundamentalNote: ETC.keyToFundamentalNote( key ),
             alterations:  ETC.keyToAlterations( key ),
