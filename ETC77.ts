@@ -327,7 +327,7 @@ export class ETC77 {
     }
 
     public static keyToComma(key: number): number{
-        let octave: number = Math.floor(( key + ETC77.commaOctaveLowKey ) / ETC77.octaveSize );
+        const octave: number = Math.floor(( key + ETC77.commaOctaveLowKey ) / ETC77.octaveSize );
         const comma: number = (((key * ETC77.commaFifhtyLeap) % ETC77.octaveSize) + ETC77.octaveSize ) % ETC77.octaveSize;
 /*
         if (ETC77.commasAboveOctave.indexOf(comma)>=0) {
@@ -347,13 +347,13 @@ export class ETC77 {
     public static commaToKey(comma: number): number {
         let octave: number = Math.floor(comma / ETC77.octaveSize);
         comma = ((comma % ETC77.octaveSize) + ETC77.octaveSize) % ETC77.octaveSize;
-        
+
         if(ETC77.commasAboveOctave.indexOf(comma)>=0) {
             octave--;
         } else if(ETC77.commasBelowOctave.indexOf(comma)>=0) {
             octave++;
         }
-        
+
         let key:  number = (comma * ETC77.multiplicativeInverseOfCommaFifhRespectToCommaOctave) % ETC77.octaveSize;
         if (key > ETC77.commaOctaveHighKey) {
             key -= ETC77.octaveSize;
@@ -390,7 +390,7 @@ export class ETC77 {
             fundamentalNote--;
             alterations++;
         }
-    
+
         return {
             fundamentalNote: fundamentalNote,
             octave: octave,
@@ -414,7 +414,7 @@ export class ETC77 {
     public static pitchToKey(pitch: ETC77Pitch = {fundamentalNote: 0, octave: 0, alterations:  0 }): number {
         // qui ci viene in soccorso indexOf() che ritorna -1 quando non trova un valore...
         const origin: number = [ 0,7,2,9,4,11 ].indexOf( pitch.fundamentalNote );
-        let octave = pitch.octave;
+        let octave: number = pitch.octave;
         let key: number = origin + ( pitch.alterations * 7);
         if (ETC77.keysAboveOctave.indexOf(key)>=0) {
             octave++;
@@ -526,7 +526,7 @@ export class ETC77 {
         return this.commaValue;
     }
 
-    public degreeOfPitch(pitch: ETC77Pitch) {
+    public degreeOfPitch(pitch: ETC77Pitch): number {
         return ETC77.pitchToDegree(pitch,this.KeyValue);
     }
 
