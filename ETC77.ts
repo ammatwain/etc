@@ -127,8 +127,8 @@ export class ETC77 {
     private static commaFifhtyLeap: number = 45;
     private static multiplicativeInverseOfCommaFifhRespectToCommaOctave: number = ETC77.findInverse(ETC77.commaFifhtyLeap, ETC77.octaveSize);
 
-    //private static minDrawableKey: number = -22;
-    //private static maxDrawableKey: number = 26;
+    private static minDrawableKey: number = -22;
+    private static maxDrawableKey: number = 26;
     //per ridurre i diesis: key - 12
     //per ridurre i bemolli: key + 12
 
@@ -160,59 +160,59 @@ export class ETC77 {
     ];
 
     public static intervals = {
-        perfectOctaveUp:       ETC77.octaveSize,
-        diminishedOctaveUp:    ETC77.octaveSize - 7,
-        augmentedSeventhUp:    12,
-        majorSeventhUp:        5,
-        minorSeventhUp:        -2,
-        diminishedSeventhUp:   -9,
-        augmentedSixthUp:      10,
-        majorSixthUp:          3,
-        minorSixthUp:          -4,
-        diminishedSixthUp:     -11,
-        augmentedFifthUp:      8,
-        perfectFifthUp:        1,
-        diminishedFifthUp:     -6,
-        augmentedFourthUp:     6,
-        perfectFourthUp:       -1,
-        diminishedFourthUp:    -8,
-        augmentedThirdUp:      11,
-        majorThirdUp:          4,
-        minorThirdUp:          -3,
-        diminishedThirdUp:     -10,
-        augmentedSecondUp:     9,
-        majorSecondUp:         2,
-        minorSecondUp:         -5,
-        diminishedSecondUp:    -12,
-        augmentedUnisonUp:     7,
-        diminishedUnisonUp:    -7,
-        perfectUnison:           0,
-        diminishedUnisonDown:    0 - -7,
-        augmentedUnisonDown:     0 - 7,
-        diminishedSecondDown:    0 - -12,
-        minorSecondDown:         0 - -5,
-        majorSecondDown:         0 - 2,
-        augmentedSecondDown:     0 - 9,
-        diminishedThirdDown:     0 - -10,
-        minorThirdDown:          0 - -3,
-        majorThirdDown:          0 - 4,
-        augmentedThirdDown:      0 - 11,
-        diminishedFourthDown:    0 - -8,
-        perfectFourthDown:       0 - -1,
-        augmentedFourthDown:     0 - 6,
-        diminishedFifthDown:     0 - -6,
-        perfectFifthDown:        0 - 1,
-        augmentedFifthDown:      0 - 8,
-        diminishedSixthDown:     0 - -11,
-        minorSixthDown:          0 - -4,
-        majorSixthDown:          0 - 3,
-        augmentedSixthDown:      0 - 10,
-        diminishedSeventhDown:   0 - -9,
-        minorSeventhDown:        0 - -2,
-        majorSeventhDown:        0 - 5,
-        augmentedSeventhDown:    0 - 12,
-        diminishedOctaveDown:    0 - (ETC77.octaveSize - 7),
-        perfectOctaveDown:       0 - ETC77.octaveSize,
+        perfectOctaveUp:        ETC77.octaveSize,
+        diminishedOctaveUp:     ETC77.octaveSize - 7,
+        augmentedSeventhUp:        12,
+        majorSeventhUp:             5,
+        minorSeventhUp:            -2,
+        diminishedSeventhUp:       -9,
+        augmentedSixthUp:          10,
+        majorSixthUp:               3,
+        minorSixthUp:              -4,
+        diminishedSixthUp:        -11,
+        augmentedFifthUp:           8,
+        perfectFifthUp:             1,
+        diminishedFifthUp:         -6,
+        augmentedFourthUp:          6,
+        perfectFourthUp:           -1,
+        diminishedFourthUp:        -8,
+        augmentedThirdUp:          11,
+        majorThirdUp:               4,
+        minorThirdUp:              -3,
+        diminishedThirdUp:        -10,
+        augmentedSecondUp:          9,
+        majorSecondUp:              2,
+        minorSecondUp:             -5,
+        diminishedSecondUp:       -12,
+        augmentedUnisonUp:          7,
+        diminishedUnisonUp:        -7,
+        perfectUnison:              0,
+        diminishedUnisonDown:       7,
+        augmentedUnisonDown:       -7,
+        diminishedSecondDown:  -ETC77.octaveSize + 12,
+        minorSecondDown:       -ETC77.octaveSize + 5,
+        majorSecondDown:       -ETC77.octaveSize + -2,
+        augmentedSecondDown:   -ETC77.octaveSize + -9,
+        diminishedThirdDown:   -ETC77.octaveSize + 10,
+        minorThirdDown:        -ETC77.octaveSize + 3,
+        majorThirdDown:        -ETC77.octaveSize + -4,
+        augmentedThirdDown:    -ETC77.octaveSize + -11,
+        diminishedFourthDown:  -ETC77.octaveSize + 8,
+        perfectFourthDown:     -ETC77.octaveSize + 1,
+        augmentedFourthDown:   -ETC77.octaveSize + -6,
+        diminishedFifthDown:   -ETC77.octaveSize + 6,
+        perfectFifthDown:      -ETC77.octaveSize + -1,
+        augmentedFifthDown:    -ETC77.octaveSize + -8,
+        diminishedSixthDown:   -ETC77.octaveSize + 11,
+        minorSixthDown:        -ETC77.octaveSize + 4,
+        majorSixthDown:        -ETC77.octaveSize + -3,
+        augmentedSixthDown:    -ETC77.octaveSize + -10,
+        diminishedSeventhDown: -ETC77.octaveSize + 9,
+        minorSeventhDown:      -ETC77.octaveSize + 2,
+        majorSeventhDown:      -ETC77.octaveSize + -5,
+        augmentedSeventhDown:  -ETC77.octaveSize + -12,
+        diminishedOctaveDown:  -ETC77.octaveSize + -7,
+        perfectOctaveDown:     -ETC77.octaveSize,
     };
 
     public static diatonicsSemitones: number[] = [
@@ -245,6 +245,8 @@ export class ETC77 {
         ETC77.intervals.majorSeventhUp,
     ];
 
+    public static fundamentalCommas: number[] = [ 0, 13, 26, 32, 45, 58, 71 ];
+
     private static circleOfFifths: ETC77[] = [
         new ETC77(-7),
         new ETC77(-6),
@@ -269,6 +271,8 @@ export class ETC77 {
     };
 
     public static simplifyMajorKey(key: number): number{
+        const octave: number = ETC77.keyOctave(key);
+        key = key - (octave * ETC77.octaveSize);
         key = key % 12;
         if (key< -7){
             key -= -12;
@@ -318,7 +322,7 @@ export class ETC77 {
         return Math.floor((key - ETC77.keyOrigin(key)) / 7) || 0;
     }
 
-    private static keyOctave(key: number): number {
+    public static keyOctave(key: number): number {
         return Math.floor((key + ETC77.commaOctaveLowKey) / ETC77.octaveSize) || 0;
     }
 
@@ -327,15 +331,15 @@ export class ETC77 {
     }
 
     public static keyToComma(key: number): number{
-        const octave: number = Math.floor(( key + ETC77.commaOctaveLowKey ) / ETC77.octaveSize );
+        let octave: number = Math.floor(( key + ETC77.commaOctaveLowKey ) / ETC77.octaveSize );
         const comma: number = (((key * ETC77.commaFifhtyLeap) % ETC77.octaveSize) + ETC77.octaveSize ) % ETC77.octaveSize;
-/*
+
         if (ETC77.commasAboveOctave.indexOf(comma)>=0) {
             octave++;
         } else if (ETC77.commasBelowOctave.indexOf(comma)>=0) {
             octave--;
         }
-*/
+
         return ( octave * ETC77.octaveSize ) + comma;
     }
 
@@ -358,6 +362,23 @@ export class ETC77 {
         if (key > ETC77.commaOctaveHighKey) {
             key -= ETC77.octaveSize;
         }
+        let validKey: number = key;
+        while (validKey<ETC77.minDrawableKey ) {
+            validKey += 12;
+        }
+        while (validKey>ETC77.maxDrawableKey ) {
+            validKey -= 12;
+        }
+        if (ETC77.keysAboveOctave.indexOf(key) >= 0 ) {
+            if (ETC77.keysAboveOctave.indexOf(validKey)<0) {
+                octave++;
+            }
+        } else if (ETC77.keysBelowOctave.indexOf(key)>=0) {
+            if (ETC77.keysBelowOctave.indexOf(validKey)<0) {
+                octave--;
+            }
+        }
+        key = validKey;
         return ( octave * ETC77.octaveSize ) + key;
     }
 
@@ -414,13 +435,15 @@ export class ETC77 {
     public static pitchToKey(pitch: ETC77Pitch = {fundamentalNote: 0, octave: 0, alterations:  0 }): number {
         // qui ci viene in soccorso indexOf() che ritorna -1 quando non trova un valore...
         const origin: number = [ 0,7,2,9,4,11 ].indexOf( pitch.fundamentalNote );
-        let octave: number = pitch.octave;
+        const octave: number = pitch.octave;
         let key: number = origin + ( pitch.alterations * 7);
+        /*
         if (ETC77.keysAboveOctave.indexOf(key)>=0) {
             octave++;
         } else if (ETC77.keysBelowOctave.indexOf(key)>=0) {
             octave--;
         }
+        */
         key += (octave * ETC77.octaveSize);
         return key;
     }
