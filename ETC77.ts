@@ -386,6 +386,13 @@ export class ETC77 {
         return ETC77.keyToPitch(ETC77.commaToKey(comma));
     }
 
+    public static commaToPitchNew(value: number): ETC77Pitch {
+        const octave: number = Math.floor(value / 77);
+        const fundamentalNote: number = Math.floor((value % 77) * 12 / 77);
+        const alterations: number = Math.floor(((value % 77) % 12) / 7);
+        return { fundamentalNote: fundamentalNote , octave: octave, alterations: alterations };
+    }
+
     public static keyToDegree(key: number, majorKey: number = 0): number{
         return ETC77.commaToDegree(ETC77.keyToComma(key), majorKey);
     }
@@ -427,9 +434,17 @@ export class ETC77 {
         return ETC77.commaToDegree(ETC77.pitchToComma(pitch), majorKey);
     }
 
-    public static pitchToComma(pitch: ETC77Pitch = {fundamentalNote: 0, octave: 0, alterations:  0 } ): number {
+/*
+    public static pitchToComma2(pitch: ETC77Pitch = {fundamentalNote: 0, octave: 0, alterations:  0 } ): number {
         const key: number = ETC77.pitchToKey(pitch);
         return ETC77.keyToComma(key);
+    }
+*/
+    public static pitchToComma(pitch: ETC77Pitch = {fundamentalNote: 0, octave: 0, alterations:  0 }): number {
+        const octaveComma: number = pitch.octave * 77;
+        const fundamentalComma: number = Math.round(77/12*pitch.fundamentalNote);
+        const alterationsComma: number = pitch.alterations * 7;
+        return octaveComma + fundamentalComma + alterationsComma ;
     }
 
     public static pitchToKey(pitch: ETC77Pitch = {fundamentalNote: 0, octave: 0, alterations:  0 }): number {
