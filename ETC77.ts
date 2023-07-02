@@ -1,41 +1,4 @@
 /*
-Pitch, Vertex, Flake, Knot = {fundamentalNote,alterations,octave}
-Key : number   [ -infinite ... +infinite ]
-MajorKey : Key [ -7 ... +7 ]
-Comma: Modulo(77) [ 0/77 ... 76/77 ]
-MajorComma : Key [ 70, 38 , 6 , 51, 19, 64 , 32, 0 , 45, 13 , 58 , 26 , 71,  39, 7 ]
-Degree: Comma - MajorComma || (Key - MajorKey) -> Comma
-Octave: Positive or negative multiple of 77;
-Dozen sinonimo di ottava, è la posizione reale del semitono
-
-passaggi:
-
-initialize trasposition
-SrcMajorKey -> SrcMajorComma
-DstMajorKey -> DstMajorComma (octave)
-
-Pitch  -> Key -> Comma -> (Comma - SrcMajorComma) -> Degree
-
-finalize trasposition
-DstMajorComma - Dst
-Degree -> (Degree + DstMajorKeyComma) -> Comma -> Key -> Pitch
-
-importante : distinione tra douzen e ottava
-*/
-
-export interface ETC77Pitch {
-    fundamentalNote: number;
-    alterations: number;
-    octave: number;
-}
-
-export interface ETC77Directions {
-    up: number;
-    closest: number;
-    down: number;
-}
-
-/*
 const THE_COMMA_77_IDEA: ETCPitch[] = [
     { fundamentalNote:  0, alterations:  0, octave: 0}, // ->       "1", "C"       -> key:   0 -> comma:  0,
     { fundamentalNote: 11, alterations: +1, octave:-1}, // ->      "#7", "B#"      -> key:  12 -> comma:  1, ( Below Octave Comma! )
@@ -111,17 +74,29 @@ const THE_COMMA_77_IDEA: ETCPitch[] = [
     { fundamentalNote: 11, alterations:  0, octave: 0}, // ->       "7", "B"       -> key:   5 -> comma: 71,
     { fundamentalNote:  9, alterations: +2, octave: 0}, // ->     "##6", "A##"     -> key:  17 -> comma: 72,
     { fundamentalNote:  7, alterations: +4, octave: 0}, // ->   "####5", "G####"   -> key:  29 -> comma: 73,
-    { fundamentalNote:  5, alterations: -5, octave: 1}, // ->  "bbbbb4", "Fbbbbb"  -> key: -36 -> comma: 74,
+    { fundamentalNote:  5, alterations: -5, octave: 1}, // ->  "bbbbb4", "Fbbbbb"  -> key: -36 -> comma: 74, ( Above Octave Comma! )
     { fundamentalNote:  4, alterations: -4, octave: 1}, // ->   "bbbb3", "Ebbbb"   -> key: -24 -> comma: 75, ( Above Octave Comma! )
     { fundamentalNote:  2, alterations: -2, octave: 1}, // ->     "bb2", "Dbb"     -> key: -12 -> comma: 76, ( Above Octave Comma! )
 ];
 */
 
+export interface ETC77Pitch {
+    fundamentalNote: number;
+    alterations: number;
+    octave: number;
+}
+
+export interface ETC77Directions {
+    up: number;
+    closest: number;
+    down: number;
+}
+
 export class ETC77 {
 
     /******************************************** BEGIN STATIC *********************************************/
 
-    public static octaveSize: number = 77;
+    private static octaveSize: number = 77;
     private static commaOctaveLowKey: number = 36;
     private static commaOctaveHighKey: number = 40;
     private static commaFifhtyLeap: number = 45;
@@ -132,89 +107,13 @@ export class ETC77 {
     //per ridurre i diesis: key - 12
     //per ridurre i bemolli: key + 12
 
+    //TODO DA AGGIORNARE!!!
     private static keysAboveOctave: number[]     = [ 12, 24, 36, 19, 31, 26, 38, 33, 40 ];
     private static commasAboveOctave: number[]   = [  1,  2,  3,  8,  9, 15, 16, 22, 29 ];
-    private static keysBelowOctave: number[]     = [-28,-33,-21,-26,-14,-31,-19, -7,-24,-12 ];
-    private static commasBelowOctave: number[]   = [ 49, 55, 56, 62, 63, 68, 69, 70, 75, 76 ];
+    private static keysBelowOctave: number[]     = [-28,-33,-21,-26,-14,-31,-19, -7,-24,-12,-35,-36 ];
+    private static commasBelowOctave: number[]   = [ 49, 55, 56, 62, 63, 68, 69, 70, 75, 76, 42, 74 ];
     //private static majorKeys: number[]         = [ -7, -6, -5, -4, -3, -2, -1,  0,  1,  2,  3,  4,  5,  6,  7 ];
     //private static majorCommas: number[]       = [ 70, 38,  6, 51, 19, 64, 32,  0, 45, 13, 58, 26, 71, 39,  7 ];
-
-    public static names: string[] = [
-        "C","B#","A###","G#####","Fbbbb","Ebbb","Db","C#","B##","A####","Gbbbbb","Fbbb","Ebb",
-        "D","C##","B###","A#####","Gbbbb","Fbb","Eb","D#","C###","B####","Abbbbb","Gbbb","Fb",
-        "E","D##","C####","B#####","Abbbb","Gbb",
-        "F","E#","D###","C#####","Bbbbbb","Abbb","Gb","F#","E##","D####","C######","Bbbbb","Abb",
-        "G","F##","E###","D#####","Cbbbb","Bbbb","Ab","G#","F###","E####","Dbbbbb","Cbbb","Bbb",
-        "A","G##","F####","E#####","Dbbbb","Cbb","Bb","A#","G###","F#####","Ebbbbb","Dbbb","Cb",
-        "B","A##","G####","F######","Ebbbb","Dbb"
-    ];
-
-    public static degrees: string[] = [
-        "1","#7","###6","#####5","bbbb4","bbb3","b2","#1","##7","####6","bbbbb5","bbb4","bb3",
-        "2","##1","###7","#####6","bbbb5","bb4","b3","#2","###1","####7","bbbbb6","bbb5","b4",
-        "3","##2","####1","#####7","bbbb6","bb5",
-        "4","#3","###2","#####1","bbbbb7","bbb6","b5","#4","##3","####2","######1","bbbb7","bb6",
-        "5","##4","###3","#####2","bbbb1","bbb7","b6","#5","###4","####3","bbbbb2","bbb1","bb7",
-        "6","##5","####4","#####3","bbbb2","bb1","b7","#6","###5","#####4","bbbbb3","bbb2","b1",
-        "7","##6","####5","######4","bbbb3","bb2",
-        "8"
-    ];
-
-    public static intervals = {
-        perfectOctaveUp:        ETC77.octaveSize,
-        diminishedOctaveUp:     ETC77.octaveSize - 7,
-        augmentedSeventhUp:        12,
-        majorSeventhUp:             5,
-        minorSeventhUp:            -2,
-        diminishedSeventhUp:       -9,
-        augmentedSixthUp:          10,
-        majorSixthUp:               3,
-        minorSixthUp:              -4,
-        diminishedSixthUp:        -11,
-        augmentedFifthUp:           8,
-        perfectFifthUp:             1,
-        diminishedFifthUp:         -6,
-        augmentedFourthUp:          6,
-        perfectFourthUp:           -1,
-        diminishedFourthUp:        -8,
-        augmentedThirdUp:          11,
-        majorThirdUp:               4,
-        minorThirdUp:              -3,
-        diminishedThirdUp:        -10,
-        augmentedSecondUp:          9,
-        majorSecondUp:              2,
-        minorSecondUp:             -5,
-        diminishedSecondUp:       -12,
-        augmentedUnisonUp:          7,
-        diminishedUnisonUp:        -7,
-        perfectUnison:              0,
-        diminishedUnisonDown:       7,
-        augmentedUnisonDown:       -7,
-        diminishedSecondDown:  -ETC77.octaveSize + 12,
-        minorSecondDown:       -ETC77.octaveSize + 5,
-        majorSecondDown:       -ETC77.octaveSize + -2,
-        augmentedSecondDown:   -ETC77.octaveSize + -9,
-        diminishedThirdDown:   -ETC77.octaveSize + 10,
-        minorThirdDown:        -ETC77.octaveSize + 3,
-        majorThirdDown:        -ETC77.octaveSize + -4,
-        augmentedThirdDown:    -ETC77.octaveSize + -11,
-        diminishedFourthDown:  -ETC77.octaveSize + 8,
-        perfectFourthDown:     -ETC77.octaveSize + 1,
-        augmentedFourthDown:   -ETC77.octaveSize + -6,
-        diminishedFifthDown:   -ETC77.octaveSize + 6,
-        perfectFifthDown:      -ETC77.octaveSize + -1,
-        augmentedFifthDown:    -ETC77.octaveSize + -8,
-        diminishedSixthDown:   -ETC77.octaveSize + 11,
-        minorSixthDown:        -ETC77.octaveSize + 4,
-        majorSixthDown:        -ETC77.octaveSize + -3,
-        augmentedSixthDown:    -ETC77.octaveSize + -10,
-        diminishedSeventhDown: -ETC77.octaveSize + 9,
-        minorSeventhDown:      -ETC77.octaveSize + 2,
-        majorSeventhDown:      -ETC77.octaveSize + -5,
-        augmentedSeventhDown:  -ETC77.octaveSize + -12,
-        diminishedOctaveDown:  -ETC77.octaveSize + -7,
-        perfectOctaveDown:     -ETC77.octaveSize,
-    };
 
     public static commaIntervals: any = {
         perfectOctaveUp:       +77,
@@ -270,7 +169,7 @@ export class ETC77 {
         perfectOctaveDown:     -77,
     };
 
-    public static diatonicsSemitones: number[] = [
+    private static diatonicSemitones: number[] = [
         ETC77.commaIntervals.perfectUnison,
         ETC77.commaIntervals.minorSecondUp,
         ETC77.commaIntervals.majorSecondUp,
@@ -285,7 +184,7 @@ export class ETC77 {
         ETC77.commaIntervals.majorSeventhUp,
     ];
 
-    public static cromaticsSemitones: number[] = [
+    private static chromaticSemitones: number[] = [
         ETC77.commaIntervals.perfectUnison,
         ETC77.commaIntervals.augmentedUnisonUp,
         ETC77.commaIntervals.majorSecondUp,
@@ -299,47 +198,6 @@ export class ETC77 {
         ETC77.commaIntervals.augmentedSixthUp,
         ETC77.commaIntervals.majorSeventhUp,
     ];
-
-    public static fundamentalCommas: number[] = [ 0, 13, 26, 32, 45, 58, 71 ];
-
-    private static circleOfFifths: ETC77[] = [
-        new ETC77(-7),
-        new ETC77(-6),
-        new ETC77(-5),
-        new ETC77(-4),
-        new ETC77(-3),
-        new ETC77(-2),
-        new ETC77(-1),
-        new ETC77(0),
-        new ETC77(1),
-        new ETC77(2),
-        new ETC77(3),
-        new ETC77(4),
-        new ETC77(5),
-        new ETC77(6),
-        new ETC77(7),
-    ];
-
-    public static keyNames: any ={
-        "Cb" :-7,"Gb" :-6,"Db" :-5,"Ab":-4,"Eb":-3,"Bb":-2,"F" :-1,"C" :0,"G" :1,"D" :2,"A"  :3,"E"  :4,"B"  :5,"F#" :6,"C#" :7,
-        "Abm":-7,"Ebm":-6,"Bbm":-5,"Fm":-4,"Cm":-3,"Gm":-2,"Dm":-1,"Am":0,"Em":1,"Bm":2,"F#m":3,"C#m":4,"G#m":5,"D#m":6,"A#m":7,
-    };
-
-    public static simplifyMajorKey(key: number): number{
-//        const octave: number = ETC77.keyOctave(key);
-//        key = key - (octave * ETC77.octaveSize);
-        key = key % 12;
-        if (key< -7){
-            key -= -12;
-        } else if (key > 7) {
-            key -= 12;
-        }
-        return key || 0;
-    }
-
-    public static KeY(majorKey: number): ETC77 {
-        return ETC77.circleOfFifths[ETC77.simplifyMajorKey(majorKey) + 7 ];
-    }
 
     // Extended Euclid's algorithm to calculate GCD and Bézout coefficients
     private static extendedEuclidean(a: number, b: number): [number,number,number] {
@@ -378,14 +236,40 @@ export class ETC77 {
         return Math.floor((key - ETC77.keyOrigin(key)) / 7) || 0;
     }
 
-    public static keyOctave(key: number): number {
-        return Math.floor((key + ETC77.commaOctaveLowKey) / ETC77.octaveSize) || 0;
-    }
-
-    public static commaToDegree(comma: number, majorKey: number = 0): number{
+    private static commaToDegree(comma: number, majorKey: number = 0): number{
         return comma - ETC77.keyToComma(majorKey);
     }
 
+    private static commaDistances(commaValueA: number, commaValueB: number): ETC77Directions{
+        const directions: ETC77Directions = {
+            closest: commaValueA,
+            up : commaValueB,
+            down: commaValueB
+        };
+        if (commaValueA!==commaValueB) {
+            if (commaValueB>commaValueA){
+                directions.up  = commaValueB;
+                directions.down  = commaValueB - ETC77.octaveSize;
+            } else {
+                directions.up  = commaValueB + ETC77.octaveSize;
+                directions.down  = commaValueB;
+            }
+            if ( (directions.up-commaValueA) <= (commaValueA - directions.down)) {
+                directions.closest = directions.up;
+            } else {
+                directions.closest = directions.down;
+            }
+        }
+        return directions;
+    }
+
+    /********************************************  END STATIC  *********************************************/
+
+    /******************************************** BEGIN PUBLIC *********************************************/
+
+    public static get OctaveSize(): number {
+        return ETC77.octaveSize;
+    }
     public static keyToComma(key: number): number{
         let octave: number = Math.floor(( key + ETC77.commaOctaveLowKey ) / ETC77.octaveSize );
         const comma: number = (((key * ETC77.commaFifhtyLeap) % ETC77.octaveSize) + ETC77.octaveSize ) % ETC77.octaveSize;
@@ -397,11 +281,6 @@ export class ETC77 {
         }
 
         return ( octave * ETC77.octaveSize ) + comma;
-    }
-
-    public static commaToMajorKey(comma: number): number {
-        comma -= (Math.floor(comma / ETC77.octaveSize) * ETC77.octaveSize);
-        return ETC77.simplifyMajorKey(ETC77.commaToKey(comma));
     }
 
     public static commaToKey(comma: number): number {
@@ -437,31 +316,6 @@ export class ETC77 {
         key = validKey;
         return ( octave * ETC77.octaveSize ) + key;
     }
-/*
-    public static commaToPitchOld(comma: number): ETC77Pitch {
-        return ETC77.keyToPitch(ETC77.commaToKey(comma));
-    }
-
-    public static commaToPitchFloat(value: number): ETC77Pitch {
-        let octave: number = Math.floor(value / 77);
-        const modulatedComma: number = ((value % 77) + 77) %77;
-        const fundamentalNote: number = [0,11, 9, 7, 5, 4, 2][ ((value % 7) + 7) %7];
-        const float: number = 12/(77 + 7/12) * modulatedComma;
-        const semitone: number = Math.round(float);
-        let alterations: number = semitone - fundamentalNote;
-        if (alterations<=-6){
-          alterations += 12;
-        }
-        if (alterations>6){
-          alterations -= 12;
-        }
-        octave += Math.floor((fundamentalNote + alterations) / 12) * -1 ;
-        if (fundamentalNote && (fundamentalNote + alterations === 0 )) {
-          octave++;
-        }
-        return { fundamentalNote: fundamentalNote , octave: octave, alterations: alterations };
-    }
-*/
 
     public static commaToPitch(comma: number): ETC77Pitch {
         const gradus: number = ((comma % 7) + 7) %7;
@@ -497,10 +351,6 @@ export class ETC77 {
         return pitch;
     }
 
-    public static keyToDegree(key: number, majorKey: number = 0): number{
-        return ETC77.commaToDegree(ETC77.keyToComma(key), majorKey);
-    }
-
     public static keyToPitch(key: number): ETC77Pitch{
         const octave: number = ETC77.keyOctave(key);
         key = key - (octave * ETC77.octaveSize);
@@ -526,16 +376,11 @@ export class ETC77 {
         return ETC77.commaToPitch(ETC77.keyToComma(majorKey + degree));
     }
 
+
     public static pitchToDegree(pitch: ETC77Pitch = {fundamentalNote: 0, octave: 0, alterations:  0 }, majorKey: number = 0 ): number{
         return ETC77.commaToDegree(ETC77.pitchToComma(pitch), majorKey);
     }
 
-/*
-    public static pitchToCommaOld(pitch: ETC77Pitch = {fundamentalNote: 0, octave: 0, alterations:  0 } ): number {
-        const key: number = ETC77.pitchToKey(pitch);
-        return ETC77.keyToComma(key);
-    }
-*/
     public static pitchToComma(pitch: ETC77Pitch = {fundamentalNote: 0, octave: 0, alterations:  0 }): number {
         const octaveComma: number = pitch.octave * ETC77.octaveSize;
         const fundamentalComma: number = Math.round(ETC77.octaveSize / 12 * pitch.fundamentalNote);
@@ -552,75 +397,72 @@ export class ETC77 {
         return key;
     }
 
-    public static commaDistances(commaValueA: number, commaValueB: number): ETC77Directions{
-        const directions: ETC77Directions = {
-            closest: commaValueA,
-            up : commaValueB,
-            down: commaValueB
-        };
-        if (commaValueA!==commaValueB) {
-            if (commaValueB>commaValueA){
-                directions.up  = commaValueB;
-                directions.down  = commaValueB - ETC77.octaveSize;
-            } else {
-                directions.up  = commaValueB + ETC77.octaveSize;
-                directions.down  = commaValueB;
-            }
-            if ( (directions.up-commaValueA) <= (commaValueA - directions.down)) {
-                directions.closest = directions.up;
-            } else {
-                directions.closest = directions.down;
-            }
+    public static keyOctave(key: number): number {
+        return Math.floor((key + ETC77.commaOctaveLowKey) / ETC77.octaveSize) || 0;
+    }
+
+    public static fundamentalCommas: number[] = [ 0, 13, 26, 32, 45, 58, 71 ];
+
+    public static simplifyMajorKey(key: number): number{
+//        const octave: number = ETC77.keyOctave(key);
+//        key = key - (octave * ETC77.octaveSize);
+        key = key % 12;
+        if (key< -7){
+            key -= -12;
+        } else if (key > 7) {
+            key -= 12;
         }
-        return directions;
-    }
-    /********************************************  END STATIC  *********************************************/
-
-    /******************************************** BEGIN PUBLIC *********************************************/
-
-    private keyValue: number = 0;
-    private commaValue: number = 0;
-
-    constructor(majorKey: number){
-        this.keyValue = majorKey;
-        this.commaValue = ETC77.keyToComma(this.keyValue);
+        return key || 0;
     }
 
-    public keyRelation(keyA: number, keyB: number): number {
-        return ETC77.simplifyMajorKey(keyA + keyB);
+    public static chromaticSemitone(semitone: number): number {
+        return ETC77.chromaticSemitones[((semitone % 12) + 12 ) % 12];
     }
 
-//    public relation(keyB: number): ETC77 {
-//        return ETC77.KEY(ETC77.simplifyMajorKey(this.keyValue + keyB));
-//    }
-
-    public get KeyValue(): number{
-        return this.keyValue;
-    }
-
-    public get CommaValue(): number{
-        return this.commaValue;
-    }
-
-    public degreeOfPitch(pitch: ETC77Pitch): number {
-        return ETC77.pitchToDegree(pitch,this.KeyValue);
+    public static diatonicSemitone(semitone: number): number {
+        return ETC77.diatonicSemitones[((semitone % 12) + 12 ) % 12];
     }
 
     public static directionsOfKeyRelation(majorKeyA: number, majorKeyB: number): ETC77Directions{
         return ETC77.commaDistances(ETC77.keyToComma(majorKeyA), ETC77.keyToComma(majorKeyB));
     }
 
-    public transposeToClosestMajor(fromMajor: number, toMajor: number, octave: number): number {
+
+    /********************************************  END PUBLIC  *********************************************/
+
+    /***************************************** BEGIN  DEAD CODE ********************************************/
+/*
+    private static keyToDegree(key: number, majorKey: number = 0): number{
+        return ETC77.commaToDegree(ETC77.keyToComma(key), majorKey);
+    }
+*/
+
+/*
+    private static keyRelation(keyA: number, keyB: number): number {
+        return ETC77.simplifyMajorKey(keyA + keyB);
+    }
+*/
+/*
+    private static degreeOfPitch(pitch: ETC77Pitch, key: number = 0): number {
+        return ETC77.pitchToDegree(pitch, key);
+    }
+*/
+
+/*
+    private static transposeToClosestMajor(fromMajor: number, toMajor: number, octave: number): number {
         return ETC77.directionsOfKeyRelation(fromMajor, toMajor).closest + (octave * ETC77.octaveSize);
     }
-
-    public transposeToUpperMajor(fromMajor: number, toMajor: number, octave: number): number {
+*/
+/*
+    private static transposeToUpperMajor(fromMajor: number, toMajor: number, octave: number): number {
         return ETC77.directionsOfKeyRelation(fromMajor, toMajor).up + (octave * ETC77.octaveSize);
     }
-
-    public transposeToLowerMajor(fromMajor: number, toMajor: number, octave: number): number {
+*/
+/*
+    private static transposeToLowerMajor(fromMajor: number, toMajor: number, octave: number): number {
         return ETC77.directionsOfKeyRelation(fromMajor, toMajor).down + (octave * ETC77.octaveSize);
     }
+*/
 /*
     public transposeToSemitone(semitone: number, movement: -5|7 = -5  ): number {
         let comma: number = 0;
@@ -644,7 +486,32 @@ export class ETC77 {
         return this.transposeToSemitone(semitone, 7);
     }
 */
+/*
+    public static commaToPitchOld(comma: number): ETC77Pitch {
+        return ETC77.keyToPitch(ETC77.commaToKey(comma));
+    }
 
-    /********************************************  END PUBLIC  *********************************************/
+    public static commaToPitchFloat(value: number): ETC77Pitch {
+        let octave: number = Math.floor(value / 77);
+        const modulatedComma: number = ((value % 77) + 77) %77;
+        const fundamentalNote: number = [0,11, 9, 7, 5, 4, 2][ ((value % 7) + 7) %7];
+        const float: number = 12/(77 + 7/12) * modulatedComma;
+        const semitone: number = Math.round(float);
+        let alterations: number = semitone - fundamentalNote;
+        if (alterations<=-6){
+          alterations += 12;
+        }
+        if (alterations>6){
+          alterations -= 12;
+        }
+        octave += Math.floor((fundamentalNote + alterations) / 12) * -1 ;
+        if (fundamentalNote && (fundamentalNote + alterations === 0 )) {
+          octave++;
+        }
+        return { fundamentalNote: fundamentalNote , octave: octave, alterations: alterations };
+    }
+*/
+
+    /****************************************** END  DEAD CODE *********************************************/
 
 }
