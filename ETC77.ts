@@ -337,7 +337,7 @@ export class ETC77 {
         return key || 0;
     }
 
-    public static KEY(majorKey: number): ETC77 {
+    public static KeY(majorKey: number): ETC77 {
         return ETC77.circleOfFifths[ETC77.simplifyMajorKey(majorKey) + 7 ];
     }
 
@@ -383,7 +383,7 @@ export class ETC77 {
     }
 
     public static commaToDegree(comma: number, majorKey: number = 0): number{
-        return comma - ETC77.KEY(majorKey).commaValue;
+        return comma - ETC77.keyToComma(majorKey);
     }
 
     public static keyToComma(key: number): number{
@@ -523,7 +523,7 @@ export class ETC77 {
     }
 
     public static degreeToPitch(degree: number, majorKey: number = 0 ): ETC77Pitch{
-        return ETC77.commaToPitch(ETC77.KEY(majorKey).commaValue + degree);
+        return ETC77.commaToPitch(ETC77.keyToComma(majorKey + degree));
     }
 
     public static pitchToDegree(pitch: ETC77Pitch = {fundamentalNote: 0, octave: 0, alterations:  0 }, majorKey: number = 0 ): number{
@@ -590,9 +590,9 @@ export class ETC77 {
         return ETC77.simplifyMajorKey(keyA + keyB);
     }
 
-    public relation(keyB: number): ETC77 {
-        return ETC77.KEY(ETC77.simplifyMajorKey(this.keyValue + keyB));
-    }
+//    public relation(keyB: number): ETC77 {
+//        return ETC77.KEY(ETC77.simplifyMajorKey(this.keyValue + keyB));
+//    }
 
     public get KeyValue(): number{
         return this.keyValue;
@@ -606,30 +606,30 @@ export class ETC77 {
         return ETC77.pitchToDegree(pitch,this.KeyValue);
     }
 
-    public directions(majorKeyB: number): ETC77Directions{
-        return ETC77.commaDistances(this.CommaValue, ETC77.KEY(majorKeyB).CommaValue);
+    public static directionsOfKeyRelation(majorKeyA: number, majorKeyB: number): ETC77Directions{
+        return ETC77.commaDistances(ETC77.keyToComma(majorKeyA), ETC77.keyToComma(majorKeyB));
     }
 
-    public transposeToClosestMajor(toMajor: number, octave: number): number {
-        return this.directions(toMajor).closest + (octave * ETC77.octaveSize);
+    public transposeToClosestMajor(fromMajor: number, toMajor: number, octave: number): number {
+        return ETC77.directionsOfKeyRelation(fromMajor, toMajor).closest + (octave * ETC77.octaveSize);
     }
 
-    public transposeToUpperMajor(toMajor: number, octave: number): number {
-        return this.directions(toMajor).up + (octave * ETC77.octaveSize);
+    public transposeToUpperMajor(fromMajor: number, toMajor: number, octave: number): number {
+        return ETC77.directionsOfKeyRelation(fromMajor, toMajor).up + (octave * ETC77.octaveSize);
     }
 
-    public transposeToLowerMajor(toMajor: number, octave: number): number {
-        return this.directions(toMajor).down + (octave * ETC77.octaveSize);
+    public transposeToLowerMajor(fromMajor: number, toMajor: number, octave: number): number {
+        return ETC77.directionsOfKeyRelation(fromMajor, toMajor).down + (octave * ETC77.octaveSize);
     }
-
+/*
     public transposeToSemitone(semitone: number, movement: -5|7 = -5  ): number {
         let comma: number = 0;
         if (semitone!==0) {
             const octave: number = Math.floor(semitone/12);
             if (semitone>0) {
-                comma = this.directions(ETC77.simplifyMajorKey((semitone % 12) * movement)).up;
+                comma = this.directionsOfKeyRelation(ETC77.simplifyMajorKey((semitone % 12) * movement)).up;
             } else if (semitone<0) {
-                comma = this.directions(ETC77.simplifyMajorKey((semitone % 12) * movement)).down;
+                comma = this.directionsOfKeyRelation(ETC77.simplifyMajorKey((semitone % 12) * movement)).down;
             }
             comma += octave * ETC77.octaveSize;
         }
@@ -643,6 +643,7 @@ export class ETC77 {
     public transposeToChromaticSemitone(semitone: number ): number {
         return this.transposeToSemitone(semitone, 7);
     }
+*/
 
     /********************************************  END PUBLIC  *********************************************/
 
