@@ -1,247 +1,266 @@
-// questi tipi non sono necessari, ma danno chiarezza alle funzioni
-export type Key = number;
-export type Comma = Key;
-export type MajorKey = Key;
+/*
+const THE_COMMA_77_IDEA: ETCPitch[] = [
+    { fundamentalNote:  0, alterations:  0, octave: 0}, // ->       "1", "C"       -> key:   0 -> comma:  0,
+    { fundamentalNote: 11, alterations: +1, octave:-1}, // ->      "#7", "B#"      -> key:  12 -> comma:  1, ( Below Octave Comma! )
+    { fundamentalNote:  9, alterations: +3, octave:-1}, // ->    "###6", "A###"    -> key:  24 -> comma:  2, ( Below Octave Comma! )
+    { fundamentalNote:  7, alterations: +5, octave:-1}, // ->  "#####5", "G#####"  -> key:  36 -> comma:  3, ( Below Octave Comma! )
+    { fundamentalNote:  5, alterations: -4, octave: 0}, // ->   "bbbb4", "Fbbbb"   -> key: -29 -> comma:  4,
+    { fundamentalNote:  4, alterations: -3, octave: 0}, // ->    "bbb3", "Ebbb"    -> key: -17 -> comma:  5,
+    { fundamentalNote:  2, alterations: -1, octave: 0}, // ->      "b2", "Db"      -> key:  -5 -> comma:  6,
+    { fundamentalNote:  0, alterations: +1, octave: 0}, // ->      "#1", "C#"      -> key:   7 -> comma:  7,
+    { fundamentalNote: 11, alterations: +2, octave:-1}, // ->     "##7", "B##"     -> key:  19 -> comma:  8, ( Below Octave Comma! )
+    { fundamentalNote:  9, alterations: +4, octave:-1}, // ->   "####6", "A####"   -> key:  31 -> comma:  9, ( Below Octave Comma! )
+    { fundamentalNote:  7, alterations: -5, octave: 0}, // ->  "bbbbb5", "Gbbbbb"  -> key: -34 -> comma: 10,
+    { fundamentalNote:  5, alterations: -3, octave: 0}, // ->    "bbb4", "Fbbb"    -> key: -22 -> comma: 11,
+    { fundamentalNote:  4, alterations: -2, octave: 0}, // ->     "bb3", "Ebb"     -> key: -10 -> comma: 12,
+    { fundamentalNote:  2, alterations:  0, octave: 0}, // ->       "2", "D"       -> key:   2 -> comma: 13,
+    { fundamentalNote:  0, alterations: +2, octave: 0}, // ->     "##1", "C##"     -> key:  14 -> comma: 14,
+    { fundamentalNote: 11, alterations: +3, octave:-1}, // ->    "###7", "B###"    -> key:  26 -> comma: 15, ( Below Octave Comma! )
+    { fundamentalNote:  9, alterations: +5, octave:-1}, // ->  "#####6", "A#####"  -> key:  38 -> comma: 16, ( Below Octave Comma! )
+    { fundamentalNote:  7, alterations: -4, octave: 0}, // ->   "bbbb5", "Gbbbb"   -> key: -27 -> comma: 17,
+    { fundamentalNote:  5, alterations: -2, octave: 0}, // ->     "bb4", "Fbb"     -> key: -15 -> comma: 18,
+    { fundamentalNote:  4, alterations: -1, octave: 0}, // ->      "b3", "Eb"      -> key:  -3 -> comma: 19,
+    { fundamentalNote:  2, alterations: +1, octave: 0}, // ->      "#2", "D#"      -> key:   9 -> comma: 20,
+    { fundamentalNote:  0, alterations: +3, octave: 0}, // ->    "###1", "C###"    -> key:  21 -> comma: 21,
+    { fundamentalNote: 11, alterations: +4, octave:-1}, // ->   "####7", "B####"   -> key:  33 -> comma: 22, ( Below Octave Comma! )
+    { fundamentalNote:  9, alterations: -5, octave: 0}, // ->  "bbbbb6", "Abbbbb"  -> key: -32 -> comma: 23,
+    { fundamentalNote:  7, alterations: -3, octave: 0}, // ->    "bbb5", "Gbbb"    -> key: -20 -> comma: 24,
+    { fundamentalNote:  5, alterations: -1, octave: 0}, // ->      "b4", "Fb"      -> key:  -8 -> comma: 25,
+    { fundamentalNote:  4, alterations:  0, octave: 0}, // ->       "3", "E"       -> key:   4 -> comma: 26,
+    { fundamentalNote:  2, alterations: +2, octave: 0}, // ->     "##2", "D##"     -> key:  16 -> comma: 27,
+    { fundamentalNote:  0, alterations: +4, octave: 0}, // ->   "####1", "C####"   -> key:  28 -> comma: 28,
+    { fundamentalNote: 11, alterations: +5, octave:-1}, // ->  "#####7", "B#####"  -> key:  40 -> comma: 29, ( Below Octave Comma! )
+    { fundamentalNote:  9, alterations: -4, octave: 0}, // ->   "bbbb6", "Abbbb"   -> key: -25 -> comma: 30,
+    { fundamentalNote:  7, alterations: -2, octave: 0}, // ->     "bb5", "Gbb"     -> key: -13 -> comma: 31,
+    { fundamentalNote:  5, alterations:  0, octave: 0}, // ->       "4", "F"       -> key:  -1 -> comma: 32,
+    { fundamentalNote:  4, alterations: +1, octave: 0}, // ->      "#3", "E#"      -> key:  11 -> comma: 33,
+    { fundamentalNote:  2, alterations: +3, octave: 0}, // ->    "###2", "D###"    -> key:  23 -> comma: 34,
+    { fundamentalNote:  0, alterations: +5, octave: 0}, // ->  "#####1", "C#####"  -> key:  35 -> comma: 35,
+    { fundamentalNote: 11, alterations: -5, octave: 0}, // ->  "bbbbb7", "Bbbbbb"  -> key: -30 -> comma: 36,
+    { fundamentalNote:  9, alterations: -3, octave: 0}, // ->    "bbb6", "Abbb"    -> key: -18 -> comma: 37,
+    { fundamentalNote:  7, alterations: -1, octave: 0}, // ->      "b5", "Gb"      -> key:  -6 -> comma: 38,
+    { fundamentalNote:  5, alterations: +1, octave: 0}, // ->      "#4", "F#"      -> key:   6 -> comma: 39,
+    { fundamentalNote:  4, alterations: +2, octave: 0}, // ->     "##3", "E##"     -> key:  18 -> comma: 40,
+    { fundamentalNote:  2, alterations: +4, octave: 0}, // ->   "####2", "D####"   -> key:  30 -> comma: 41,
+    { fundamentalNote:  0, alterations: -5, octave: 1}, // ->  "bbbbb1", "Cbbbbb"  -> key: -35 -> comma: 42, ( Above Octave Comma! )
+    { fundamentalNote: 11, alterations: -4, octave: 0}, // ->   "bbbb7", "Bbbbb"   -> key: -23 -> comma: 43,
+    { fundamentalNote:  9, alterations: -2, octave: 0}, // ->     "bb6", "Abb"     -> key: -11 -> comma: 44,
+    { fundamentalNote:  7, alterations:  0, octave: 0}, // ->       "5", "G"       -> key:   1 -> comma: 45,
+    { fundamentalNote:  5, alterations: +2, octave: 0}, // ->     "##4", "F##"     -> key:  13 -> comma: 46,
+    { fundamentalNote:  4, alterations: +3, octave: 0}, // ->    "###3", "E###"    -> key:  25 -> comma: 47,
+    { fundamentalNote:  2, alterations: +5, octave: 0}, // ->  "#####2", "D#####"  -> key:  37 -> comma: 48,
+    { fundamentalNote:  0, alterations: -4, octave: 1}, // ->   "bbbb1", "Cbbbb"   -> key: -28 -> comma: 49, ( Above Octave Comma! )
+    { fundamentalNote: 11, alterations: -3, octave: 0}, // ->    "bbb7", "Bbbb"    -> key: -16 -> comma: 50,
+    { fundamentalNote:  9, alterations: -1, octave: 0}, // ->      "b6", "Ab"      -> key:  -4 -> comma: 51,
+    { fundamentalNote:  7, alterations: +1, octave: 0}, // ->      "#5", "G#"      -> key:   8 -> comma: 52,
+    { fundamentalNote:  5, alterations: +3, octave: 0}, // ->    "###4", "F###"    -> key:  20 -> comma: 53,
+    { fundamentalNote:  4, alterations: +4, octave: 0}, // ->   "####3", "E####"   -> key:  32 -> comma: 54,
+    { fundamentalNote:  2, alterations: -5, octave: 1}, // ->  "bbbbb2", "Dbbbbb"  -> key: -33 -> comma: 55, ( Above Octave Comma! )
+    { fundamentalNote:  0, alterations: -3, octave: 1}, // ->    "bbb1", "Cbbb"    -> key: -21 -> comma: 56, ( Above Octave Comma! )
+    { fundamentalNote: 11, alterations: -2, octave: 0}, // ->     "bb7", "Bbb"     -> key:  -9 -> comma: 57,
+    { fundamentalNote:  9, alterations:  0, octave: 0}, // ->       "6", "A"       -> key:   3 -> comma: 58,
+    { fundamentalNote:  7, alterations: +2, octave: 0}, // ->     "##5", "G##"     -> key:  15 -> comma: 59,
+    { fundamentalNote:  5, alterations: +4, octave: 0}, // ->   "####4", "F####"   -> key:  27 -> comma: 60,
+    { fundamentalNote:  4, alterations: +5, octave: 0}, // ->  "#####3", "E#####"  -> key:  39 -> comma: 61,
+    { fundamentalNote:  2, alterations: -4, octave: 1}, // ->   "bbbb2", "Dbbbb"   -> key: -26 -> comma: 62, ( Above Octave Comma! )
+    { fundamentalNote:  0, alterations: -2, octave: 1}, // ->     "bb1", "Cbb"     -> key: -14 -> comma: 63, ( Above Octave Comma! )
+    { fundamentalNote: 11, alterations: -1, octave: 0}, // ->      "b7", "Bb"      -> key:  -2 -> comma: 64,
+    { fundamentalNote:  9, alterations: +1, octave: 0}, // ->      "#6", "A#"      -> key:  10 -> comma: 65,
+    { fundamentalNote:  7, alterations: +3, octave: 0}, // ->    "###5", "G###"    -> key:  22 -> comma: 66,
+    { fundamentalNote:  5, alterations: +5, octave: 0}, // ->  "#####4", "F#####"  -> key:  34 -> comma: 67,
+    { fundamentalNote:  4, alterations: -5, octave: 1}, // ->  "bbbbb3", "Ebbbbb"  -> key: -31 -> comma: 68, ( Above Octave Comma! )
+    { fundamentalNote:  2, alterations: -3, octave: 1}, // ->    "bbb2", "Dbbb"    -> key: -19 -> comma: 69, ( Above Octave Comma! )
+    { fundamentalNote:  0, alterations: -1, octave: 1}, // ->      "b1", "Cb"      -> key:  -7 -> comma: 70, ( Above Octave Comma! )
+    { fundamentalNote: 11, alterations:  0, octave: 0}, // ->       "7", "B"       -> key:   5 -> comma: 71,
+    { fundamentalNote:  9, alterations: +2, octave: 0}, // ->     "##6", "A##"     -> key:  17 -> comma: 72,
+    { fundamentalNote:  7, alterations: +4, octave: 0}, // ->   "####5", "G####"   -> key:  29 -> comma: 73,
+    { fundamentalNote:  5, alterations: -5, octave: 1}, // ->  "bbbbb4", "Fbbbbb"  -> key: -36 -> comma: 74, ( Above Octave Comma! )
+    { fundamentalNote:  4, alterations: -4, octave: 1}, // ->   "bbbb3", "Ebbbb"   -> key: -24 -> comma: 75, ( Above Octave Comma! )
+    { fundamentalNote:  2, alterations: -2, octave: 1}, // ->     "bb2", "Dbb"     -> key: -12 -> comma: 76, ( Above Octave Comma! )
+];
+*/
 
-export interface Node {
+export interface ETCPitch {
     fundamentalNote: number;
     alterations: number;
-    octave?: number;
-    index?: number;
-    key?: number;
+    octave: number;
 }
 
-export interface Directions {
-    closest: Comma;
-    up: Comma;
-    down: Comma;
+export interface ETCDirections {
+    up: number;
+    closest: number;
+    down: number;
 }
-
-export const Nodes: Node[] = [
-    { fundamentalNote:  0, alterations:  0 },
-    { fundamentalNote: 11, alterations: +1 },
-    { fundamentalNote:  9, alterations: +3 },
-    { fundamentalNote:  7, alterations: +5 },
-    { fundamentalNote:  5, alterations: -4 },
-    { fundamentalNote:  4, alterations: -3 },
-    { fundamentalNote:  2, alterations: -1 },
-    { fundamentalNote:  0, alterations: +1 },
-    { fundamentalNote: 11, alterations: +2 },
-    { fundamentalNote:  9, alterations: +4 },
-    { fundamentalNote:  7, alterations: -5 },
-    { fundamentalNote:  5, alterations: -3 },
-    { fundamentalNote:  4, alterations: -2 },
-    { fundamentalNote:  2, alterations:  0 },
-    { fundamentalNote:  0, alterations: +2 },
-    { fundamentalNote: 11, alterations: +3 },
-    { fundamentalNote:  9, alterations: +5 },
-    { fundamentalNote:  7, alterations: -4 },
-    { fundamentalNote:  5, alterations: -2 },
-    { fundamentalNote:  4, alterations: -1 },
-    { fundamentalNote:  2, alterations: +1 },
-    { fundamentalNote:  0, alterations: +3 },
-    { fundamentalNote: 11, alterations: +4 },
-    { fundamentalNote:  9, alterations: -5 },
-    { fundamentalNote:  7, alterations: -3 },
-    { fundamentalNote:  5, alterations: -1 },
-    { fundamentalNote:  4, alterations:  0 },
-    { fundamentalNote:  2, alterations: +2 },
-    { fundamentalNote:  0, alterations: +4 },
-    { fundamentalNote: 11, alterations: +5 },
-    { fundamentalNote:  9, alterations: -4 },
-    { fundamentalNote:  7, alterations: -2 },
-    { fundamentalNote:  5, alterations:  0 },
-    { fundamentalNote:  4, alterations: +1 },
-    { fundamentalNote:  2, alterations: +3 },
-    { fundamentalNote:  0, alterations: +5 },
-    { fundamentalNote: 11, alterations: -5 },
-    { fundamentalNote:  9, alterations: -3 },
-    { fundamentalNote:  7, alterations: -1 },
-    { fundamentalNote:  5, alterations: +1 },
-    { fundamentalNote:  4, alterations: +2 },
-    { fundamentalNote:  2, alterations: +4 },
-    { fundamentalNote:  0, alterations: +6 },
-    { fundamentalNote: 11, alterations: -4 },
-    { fundamentalNote:  9, alterations: -2 },
-    { fundamentalNote:  7, alterations:  0 },
-    { fundamentalNote:  5, alterations: +2 },
-    { fundamentalNote:  4, alterations: +3 },
-    { fundamentalNote:  2, alterations: +5 },
-    { fundamentalNote:  0, alterations: -4 },
-    { fundamentalNote: 11, alterations: -3 },
-    { fundamentalNote:  9, alterations: -1 },
-    { fundamentalNote:  7, alterations: +1 },
-    { fundamentalNote:  5, alterations: +3 },
-    { fundamentalNote:  4, alterations: +4 },
-    { fundamentalNote:  2, alterations: -5 },
-    { fundamentalNote:  0, alterations: -3 },
-    { fundamentalNote: 11, alterations: -2 },
-    { fundamentalNote:  9, alterations:  0 },
-    { fundamentalNote:  7, alterations: +2 },
-    { fundamentalNote:  5, alterations: +4 },
-    { fundamentalNote:  4, alterations: +5 },
-    { fundamentalNote:  2, alterations: -4 },
-    { fundamentalNote:  0, alterations: -2 },
-    { fundamentalNote: 11, alterations: -1 },
-    { fundamentalNote:  9, alterations: +1 },
-    { fundamentalNote:  7, alterations: +3 },
-    { fundamentalNote:  5, alterations: +5 },
-    { fundamentalNote:  4, alterations: -5 },
-    { fundamentalNote:  2, alterations: -3 },
-    { fundamentalNote:  0, alterations: -1 },
-    { fundamentalNote: 11, alterations:  0 },
-    { fundamentalNote:  9, alterations: +2 },
-    { fundamentalNote:  7, alterations: +4 },
-    { fundamentalNote:  5, alterations: +6 },
-    { fundamentalNote:  4, alterations: -4 },
-    { fundamentalNote:  2, alterations: -2 },
-];
 
 export class ETC {
-    static octaveSize: Key = 175;
-    static absOctaveMinKey: Key = 85;
-    static absOctaveMaxKey: Key = 89;
-    static intervals = {
-        "perfectUnison":       <Key>0,
-        "diminishedUnison":    <Key>-7,
-        "augmentedUnison":     <Key>7,
-        "diminishedSecond":    <Key>-12,
-        "minorSecond":         <Key>-5,
-        "majorSecond":         <Key>2,
-        "augmentedSecond":     <Key>9,
-        "diminishedThird":     <Key>-10,
-        "minorThird":          <Key>-3,
-        "majorThird":          <Key>4,
-        "augmentedThird":      <Key>11,
-        "diminishedFourth":    <Key>-8,
-        "perfectFourth":       <Key>-1,
-        "augmentedFourth":     <Key>6,
-        "diminishedFifth":     <Key>-6,
-        "perfectFifth":        <Key>1,
-        "augmentedFifth":      <Key>8,
-        "diminishedSixth":     <Key>-11,
-        "minorSixth":          <Key>-4,
-        "majorSixth":          <Key>3,
-        "augmentedSixth":      <Key>10,
-        "diminishedSeventh":   <Key>-9,
-        "minorSeventh":        <Key>-2,
-        "majorSeventh":        <Key>5,
-        "augmentedSeventh":    <Key>12,
-        "diminishedOctave":    <Key>ETC.octaveSize-7,
-        "perfectOctave":       <Key>ETC.octaveSize,
+
+    /******************************************** BEGIN STATIC *********************************************/
+
+    private static fundamentalNotes:         number[] = [ 0,  2,  4,  5,  7,  9, 11 ];
+    private static inverseFundamentalNotes:  number[] = [ 0, 11,  9,  7,  5,  4,  2 ];
+    private static fundamentalCommas:        number[] = [ 0, 13, 26, 32, 45, 58, 71 ];
+    private static inverseFundamentalCommas: number[] = [ 0, 71, 58, 45, 32, 26, 13 ] ;
+
+
+    private static octaveSize: number = 77;
+    private static commaOctaveLowKey: number = 36;
+    private static commaOctaveHighKey: number = 40;
+    private static commaFifhtyLeap: number = 45;
+    private static multiplicativeInverseOfCommaFifhRespectToCommaOctave: number = ETC.findInverse(ETC.commaFifhtyLeap, ETC.octaveSize);
+
+    private static minDrawableKey: number = -22;
+    private static maxDrawableKey: number = 26;
+    //per ridurre i diesis: key - 12
+    //per ridurre i bemolli: key + 12
+
+    //TODO DA AGGIORNARE!!!
+    private static keysAboveOctave: number[]     = [ 12, 24, 36, 19, 31, 26, 38, 33, 40 ];
+    private static commasAboveOctave: number[]   = [  1,  2,  3,  8,  9, 15, 16, 22, 29 ];
+    private static keysBelowOctave: number[]     = [-28,-33,-21,-26,-14,-31,-19, -7,-24,-12,-35,-36 ];
+    private static commasBelowOctave: number[]   = [ 49, 55, 56, 62, 63, 68, 69, 70, 75, 76, 42, 74 ];
+    //private static majorKeys: number[]         = [ -7, -6, -5, -4, -3, -2, -1,  0,  1,  2,  3,  4,  5,  6,  7 ];
+    //private static majorCommas: number[]       = [ 70, 38,  6, 51, 19, 64, 32,  0, 45, 13, 58, 26, 71, 39,  7 ];
+
+    public static commaIntervals: any = {
+        perfectOctaveUp:       +77,
+        diminishedOctaveUp:    +70,
+        augmentedSeventhUp:    +78,
+        majorSeventhUp:        +71,
+        minorSeventhUp:        +64,
+        diminishedSeventhUp:   +57,
+        augmentedSixthUp:      +65,
+        majorSixthUp:          +58,
+        minorSixthUp:          +51,
+        diminishedSixthUp:     +44,
+        augmentedFifthUp:      +52,
+        perfectFifthUp:        +45,
+        diminishedFifthUp:     +38,
+        augmentedFourthUp:     +39,
+        perfectFourthUp:       +32,
+        diminishedFourthUp:    +25,
+        augmentedThirdUp:      +33,
+        majorThirdUp:          +26,
+        minorThirdUp:          +19,
+        diminishedThirdUp:     +10,
+        augmentedSecondUp:     +20,
+        majorSecondUp:         +13,
+        minorSecondUp:          +6,
+        diminishedSecondUp:     -1,
+        augmentedUnisonUp:      +7,
+        perfectUnison:           0,
+        augmentedUnisonDown:    -7,
+        diminishedSecondDown:   -1,
+        minorSecondDown:        -6,
+        majorSecondDown:       -13,
+        augmentedSecondDown:   -20,
+        diminishedThirdDown:   -10,
+        minorThirdDown:        -19,
+        majorThirdDown:        -26,
+        augmentedThirdDown:    -33,
+        diminishedFourthDown:  -25,
+        perfectFourthDown:     -32,
+        augmentedFourthDown:   -39,
+        diminishedFifthDown:   -38,
+        perfectFifthDown:      -45,
+        augmentedFifthDown:    -52,
+        diminishedSixthDown:   -44,
+        minorSixthDown:        -51,
+        majorSixthDown:        -58,
+        augmentedSixthDown:    -65,
+        diminishedSeventhDown: -57,
+        minorSeventhDown:      -64,
+        majorSeventhDown:      -71,
+        augmentedSeventhDown:  -78,
+        diminishedOctaveDown:  -70,
+        perfectOctaveDown:     -77,
     };
 
-    public static diatonicsIndexArray: Key[] = [
-        ETC.intervals.perfectUnison,
-        ETC.intervals.minorSecond,
-        ETC.intervals.majorSecond,
-        ETC.intervals.minorThird,
-        ETC.intervals.majorThird,
-        ETC.intervals.perfectFourth,
-        ETC.intervals.diminishedFifth,
-        ETC.intervals.perfectFifth,
-        ETC.intervals.minorSixth,
-        ETC.intervals.majorSixth,
-        ETC.intervals.minorSeventh,
-        ETC.intervals.majorSeventh,
+    private static diatonicSemitones: number[] = [
+        ETC.commaIntervals.perfectUnison,
+        ETC.commaIntervals.minorSecondUp,
+        ETC.commaIntervals.majorSecondUp,
+        ETC.commaIntervals.minorThirdUp,
+        ETC.commaIntervals.majorThirdUp,
+        ETC.commaIntervals.perfectFourthUp,
+        ETC.commaIntervals.diminishedFifthUp,
+        ETC.commaIntervals.perfectFifthUp,
+        ETC.commaIntervals.minorSixthUp,
+        ETC.commaIntervals.majorSixthUp,
+        ETC.commaIntervals.minorSeventhUp,
+        ETC.commaIntervals.majorSeventhUp,
     ];
 
-    public static cromaticsIndexArray: Key[] = [
-        ETC.intervals.perfectUnison,
-        ETC.intervals.augmentedUnison,
-        ETC.intervals.majorSecond,
-        ETC.intervals.augmentedSecond,
-        ETC.intervals.majorThird,
-        ETC.intervals.perfectFourth,
-        ETC.intervals.augmentedFourth,
-        ETC.intervals.perfectFifth,
-        ETC.intervals.augmentedFifth,
-        ETC.intervals.majorSixth,
-        ETC.intervals.augmentedSixth,
-        ETC.intervals.majorSeventh,
+    private static chromaticSemitones: number[] = [
+        ETC.commaIntervals.perfectUnison,
+        ETC.commaIntervals.augmentedUnisonUp,
+        ETC.commaIntervals.majorSecondUp,
+        ETC.commaIntervals.augmentedSecondUp,
+        ETC.commaIntervals.majorThirdUp,
+        ETC.commaIntervals.perfectFourthUp,
+        ETC.commaIntervals.augmentedFourthUp,
+        ETC.commaIntervals.perfectFifthUp,
+        ETC.commaIntervals.augmentedFifthUp,
+        ETC.commaIntervals.majorSixthUp,
+        ETC.commaIntervals.augmentedSixthUp,
+        ETC.commaIntervals.majorSeventhUp,
     ];
 
-    public static keyNames: any ={
-        "Cb" :-7,"Gb" :-6,"Db" :-5,"Ab":-4,"Eb":-3,"Bb":-2,"F" :-1,"C" :0,"G" :1,"D" :2,"A"  :3,"E"  :4,"B"  :5,"F#" :6,"C#" :7,
-        "Abm":-7,"Ebm":-6,"Bbm":-5,"Fm":-4,"Cm":-3,"Gm":-2,"Dm":-1,"Am":0,"Em":1,"Bm":2,"F#m":3,"C#m":4,"G#m":5,"D#m":6,"A#m":7,
-    };
-
-    private static circleOfFifths: ETC[] = [
-        new ETC(-7),
-        new ETC(-6),
-        new ETC(-5),
-        new ETC(-4),
-        new ETC(-3),
-        new ETC(-2),
-        new ETC(-1),
-        new ETC(0),
-        new ETC(1),
-        new ETC(2),
-        new ETC(3),
-        new ETC(4),
-        new ETC(5),
-        new ETC(6),
-        new ETC(7),
-    ];
-
-    private rootKey: MajorKey = 0;
-
-    public static simplifyMajorKey(key: Key): MajorKey{
-        key = key % 12;
-        if (key< -7){
-            key -= -12;
-        } else if (key > 7) {
-            key -= 12;
+    // Extended Euclid's algorithm to calculate GCD and Bézout coefficients
+    private static extendedEuclidean(a: number, b: number): [number,number,number] {
+        if (b === 0) {
+            return [a, 1, 0];
         }
-        return <MajorKey>key || 0;
+        const [gcd, x, y] = ETC.extendedEuclidean(b, a % b);
+        const newX: number = y;
+        const newY: number = x - Math.floor(a / b) * y;
+        return [gcd, newX, newY];
     }
 
-    constructor(key: Key = 0) {
-        this.rootKey = ETC.simplifyMajorKey(key);
+    //Function to find the multiplicative inverse of "a" with respect to "m"
+    private static findInverse(a: number, m: number): number {
+        const gcd: [ number , number , number ] = ETC.extendedEuclidean( a , m );
+        if (gcd[0] !== 1) {
+            return -1; // No multiplicative inverse found
+        }
+        let inverse: number = gcd[1] % m;
+        if (inverse < 0) {
+            inverse = ( inverse + m ) % m;
+        }
+        return inverse;
     }
 
-    public get RootKey(): MajorKey {
-        return this.rootKey;
+    private static keyOrigin(key: number): number{
+        return (( key % 7 ) + 7 ) % 7;
     }
 
-    public static majorKey(key: MajorKey = 0): ETC {
-        return ETC.circleOfFifths[ETC.simplifyMajorKey(key) + 7 ];
+    private static keyFundamentalNote(key: number): number {
+        // in key context the value after 11 is 6, not 5
+        return [0,7,2,9,4,11,6][ETC.keyOrigin(key)];
     }
 
-    public relativeMajorKey(keyRelation: MajorKey): ETC {
-        return ETC.majorKey(ETC.simplifyMajorKey(this.RootKey + keyRelation));
+    private static keyAlterations(key: number): number {
+        return Math.floor((key - ETC.keyOrigin(key)) / 7) || 0;
     }
 
-    public static commaToOctave(comma: Comma): number{
-        return Math.floor((comma + ETC.absOctaveMinKey) / ETC.octaveSize);
+    private static commaToDegree(comma: number, majorKey: number = 0): number{
+        return comma - ETC.keyToComma(majorKey);
     }
 
-    public static absoluteComma(comma: Comma): number{
-        return comma - (ETC.commaToOctave(comma) *ETC.octaveSize);
-    }
-    public static commaToHalftone(comma: Comma): number {
-        return (ETC.commaToOctave(comma) * 12) + ETC.commaToFundamentalNote(comma) + ETC.commaToAlterations(comma);
-    }
-
-    public static closestComma(a: Comma, b: Comma): Directions{
-        const directions: Directions = {closest: a, up : b, down: b};
-        if (a!==b) {
-            const hA: number = ETC.commaToHalftone(a);
-            const hB: number = ETC.commaToHalftone(b);
-            let halftoneUp: number;
-            let halftoneDown: number;
-            if (hB>hA){
-                directions.up  = b;
-                directions.down  = b - ETC.octaveSize;
-                halftoneUp = hB;
-                halftoneDown = ETC.commaToHalftone(directions.down);
+    private static commaDistances(commaValueA: number, commaValueB: number): ETCDirections{
+        const directions: ETCDirections = {
+            closest: commaValueA,
+            up : commaValueB,
+            down: commaValueB
+        };
+        if (commaValueA!==commaValueB) {
+            if (commaValueB>commaValueA){
+                directions.up  = commaValueB;
+                directions.down  = commaValueB - ETC.octaveSize;
             } else {
-                directions.up  = b + ETC.octaveSize;
-                directions.down  = b;
-                halftoneUp = ETC.commaToHalftone(directions.up);
-                halftoneDown = hB;
+                directions.up  = commaValueB + ETC.octaveSize;
+                directions.down  = commaValueB;
             }
-            if ( (halftoneUp-hA) <= (hA - halftoneDown)) {
+            if ( (directions.up-commaValueA) <= (commaValueA - directions.down)) {
                 directions.closest = directions.up;
             } else {
                 directions.closest = directions.down;
@@ -250,125 +269,213 @@ export class ETC {
         return directions;
     }
 
-    private static commaToAlterations(comma: Comma): number{
-        const commaMixture: number = comma - ( ETC.commaToOctave( comma ) * ETC.octaveSize ) + 1 ;
-        const alterations: number  = Math.floor(commaMixture / 7);
-        return alterations > 6 ? alterations - 12 : alterations;
-    }
-    private static commaToFundamentalNote(comma: Comma): number{
-        const fundamentalNoteDegree: number = ( ( comma % 7 ) + 7 ) % 7;
-        return [ 0,7,2,9,4,11,5 ][ fundamentalNoteDegree ];
+    /********************************************  END STATIC  *********************************************/
+
+    /******************************************** BEGIN PUBLIC *********************************************/
+
+    public static get OctaveSize(): number {
+        return ETC.octaveSize;
     }
 
-    public static commaToNode(comma: Comma): Node  {
+    public static commaToDrawablePitch(comma: number ): ETCPitch{
+        let pitch: ETCPitch;
+        do {
+            pitch = ETC.commaToPitch(comma);
+            if (pitch.alterations<-3){
+                comma++;
+            } else if (pitch.alterations>3){
+                comma--;
+            }
+        } while( Math.abs( pitch.alterations ) > 3 );
+        return pitch;
+    }
+
+    public static commaToKey(comma: number): number {
+        let octave: number = Math.floor(comma / ETC.octaveSize);
+        comma = ((comma % ETC.octaveSize) + ETC.octaveSize) % ETC.octaveSize;
+
+        if(ETC.commasAboveOctave.indexOf(comma)>=0) {
+            octave--;
+        } else if(ETC.commasBelowOctave.indexOf(comma)>=0) {
+            octave++;
+        }
+
+        let key:  number = (comma * ETC.multiplicativeInverseOfCommaFifhRespectToCommaOctave) % ETC.octaveSize;
+        if (key > ETC.commaOctaveHighKey) {
+            key -= ETC.octaveSize;
+        }
+        let validKey: number = key;
+        while (validKey<ETC.minDrawableKey ) {
+            validKey += 12;
+        }
+        while (validKey>ETC.maxDrawableKey ) {
+            validKey -= 12;
+        }
+        if (ETC.keysAboveOctave.indexOf(key) >= 0 ) {
+            if (ETC.keysAboveOctave.indexOf(validKey)<0) {
+                octave++;
+            }
+        } else if (ETC.keysBelowOctave.indexOf(key)>=0) {
+            if (ETC.keysBelowOctave.indexOf(validKey)<0) {
+                octave--;
+            }
+        }
+        key = validKey;
+        return ( octave * ETC.octaveSize ) + key;
+    }
+
+    public static commaToPitch(comma: number): ETCPitch {
+        const gradus: number = ((comma % 7) + 7) %7;
+        const fundamentalComma: number = ETC.inverseFundamentalCommas[gradus];
+        const fundamentalNote: number = ETC.inverseFundamentalNotes[gradus];
+        let octave: number = Math.floor(comma / ETC.octaveSize);
+        const octavedFundamentalComma: number = (octave * ETC.octaveSize) + fundamentalComma;
+        const alterationsComma: number = comma - octavedFundamentalComma;
+        let alterations: number = alterationsComma / 7;
+
+        if (alterations<-5){
+            alterations += 11;
+            octave--;
+        } else if (alterations>5){
+            alterations -= 11;
+            octave++;
+        }
+
+        return {fundamentalNote: fundamentalNote , alterations: alterations, octave: octave };
+
+    }
+
+    public static chromaticSemitone(semitone: number): number {
+        return ETC.chromaticSemitones[((semitone % 12) + 12 ) % 12];
+    }
+
+    public static degreeToPitch(degree: number, majorKey: number = 0 ): ETCPitch{
+        return ETC.commaToPitch(ETC.keyToComma(majorKey + degree));
+    }
+
+    public static diatonicSemitone(semitone: number): number {
+        return ETC.diatonicSemitones[((semitone % 12) + 12 ) % 12];
+    }
+
+    public static directionsOfKeyRelation(majorKeyA: number, majorKeyB: number): ETCDirections{
+        return ETC.commaDistances(ETC.keyToComma(majorKeyA), ETC.keyToComma(majorKeyB));
+    }
+
+    public static keyToPitch(key: number): ETCPitch{
+        const octave: number = ETC.keyOctave(key);
+        key = key - (octave * ETC.octaveSize);
+        let fundamentalNote: number = ETC.keyFundamentalNote(key);
+        let alterations: number = ETC.keyAlterations(key) % 12;
+        if(alterations>6){
+            alterations -= 12;
+        }
+        // this is ok except for F# ...
+        if (fundamentalNote===6){
+            fundamentalNote--;
+            alterations++;
+        }
+
         return {
-            fundamentalNote: ETC.commaToFundamentalNote( comma ),
-            alterations:  ETC.commaToAlterations( comma ),
-            octave: ETC.commaToOctave( comma )
+            fundamentalNote: fundamentalNote,
+            octave: octave,
+            alterations: alterations,
         };
     }
 
-    public static simplifyComma(comma: Comma): Comma  {
-        let alterations: number = ETC.commaToAlterations(comma);
-        while (Math.abs(alterations)>3 ) {
-            comma += Math.sign(alterations) * -7;
-            alterations = ETC.commaToAlterations(comma);
+    public static keyOctave(key: number): number {
+        return Math.floor((key + ETC.commaOctaveLowKey) / ETC.octaveSize) || 0;
+    }
+
+    public static keyToComma(key: number): number{
+        let octave: number = Math.floor(( key + ETC.commaOctaveLowKey ) / ETC.octaveSize );
+        const comma: number = (((key * ETC.commaFifhtyLeap) % ETC.octaveSize) + ETC.octaveSize ) % ETC.octaveSize;
+
+        if (ETC.commasAboveOctave.indexOf(comma)>=0) {
+            octave++;
+        } else if (ETC.commasBelowOctave.indexOf(comma)>=0) {
+            octave--;
         }
-        return comma;
+
+        return ( octave * ETC.octaveSize ) + comma;
     }
 
-    public static commaToSimplifyNode(comma: Comma): Node {
-        comma = ETC.simplifyComma(comma);
-        return {
-            fundamentalNote: ETC.commaToFundamentalNote( comma ),
-            alterations:  ETC.commaToAlterations( comma ),
-            octave: ETC.commaToOctave( comma )
-        };
+    public static pitchToComma(pitch: ETCPitch = {fundamentalNote: 0, octave: 0, alterations:  0 }): number {
+        const octaveComma: number = pitch.octave * ETC.octaveSize;
+        const fundamentalComma: number = Math.round(ETC.octaveSize / 12 * pitch.fundamentalNote);
+        const alterationsComma: number = pitch.alterations * 7;
+        return octaveComma + fundamentalComma + alterationsComma ;
     }
 
-    public static nodeToComma(comma: Node = {fundamentalNote: 0, alterations: 0 , octave:  0 }): number {
-        const keyModule: number = [ 0,1,2,3,4,5,-1 ][ [ 0,7,2,9,4,11,5 ].indexOf( comma.fundamentalNote ) ];
-        return (comma.octave * ETC.octaveSize) + keyModule + comma.alterations * 7;
+    public static pitchToDegree(pitch: ETCPitch = {fundamentalNote: 0, octave: 0, alterations:  0 }, majorKey: number = 0 ): number{
+        return ETC.commaToDegree(ETC.pitchToComma(pitch), majorKey);
     }
 
-    public static commaToAbsoluteIndex(comma: Node): number {
-        let index: number = Nodes.findIndex((etc: Node)=>{
-            return etc.alterations === comma.alterations && etc.fundamentalNote === comma.fundamentalNote;
-        });
-        if (index<0){
-            index = 0;
+    public static pitchToKey(pitch: ETCPitch = {fundamentalNote: 0, octave: 0, alterations:  0 }): number {
+        // indexOf() return -1 ... ;)
+        const origin: number = ETC.fundamentalNotes.indexOf( pitch.fundamentalNote );
+        const octave: number = pitch.octave;
+        let key: number = origin + ( pitch.alterations * 7);
+        key += (octave * ETC.octaveSize);
+        return key;
+    }
+
+    public static get FundamentalNote(): number[] {
+        return ETC.fundamentalNotes;
+    }
+
+    public static get FundamentalCommas(): number[] {
+        return ETC.fundamentalCommas;
+    }
+
+    public static simplifyMajorKey(key: number): number{
+//        const octave: number = ETC77.keyOctave(key);
+//        key = key - (octave * ETC77.octaveSize);
+        key = key % 12;
+        if (key< -7){
+            key -= -12;
+        } else if (key > 7) {
+            key -= 12;
         }
-        return index;
+        return key || 0;
     }
 
-    public static sum(a: Comma , b: Comma|Key|MajorKey): Comma{
-        const f1: number = ETC.commaToFundamentalNote(a);
-        const f2: number = ETC.commaToFundamentalNote(b);
-        const f3: number = ETC.commaToFundamentalNote(a+b);
-        const d1: number = [0,2,4,5,7,9,11].indexOf(f1);
-        const d2: number = [0,2,4,5,7,9,11].indexOf(f2);
-        const o1: number = ETC.commaToOctave(a);
-        const o2: number = ETC.commaToOctave(b);
-        const o3: number = o1 + o2 + Math.floor((d1 + d2) / 7 );
-        const a3: number = ETC.commaToAlterations(a+b);
-        const comma: number = ETC.nodeToComma({ fundamentalNote: f3, alterations: a3, octave: o3 });
-        return comma;
-    }
+    //public transpose(toKey: number,currentKey: number, mainKey: number)
 
-    public static commaToIndex(comma: Node): number {
-        let index: number = ETC.commaToAbsoluteIndex(comma);
-        index += (comma.octave||0) * Nodes.length;
-        return index;
-    }
+    /********************************************  END PUBLIC  *********************************************/
 
-    public static indexToComma(index: number): Node {
-        const moduleIndex: number = ((index % ETC.octaveSize) + ETC.octaveSize ) % ETC.octaveSize;
-        const comma: Node = Nodes[moduleIndex];
-        comma.octave = Math.floor(index/ETC.octaveSize);
-        return comma;
+    /***************************************** BEGIN  DEAD CODE ********************************************/
+/*
+    private static keyToDegree(key: number, majorKey: number = 0): number{
+        return ETC77.commaToDegree(ETC77.keyToComma(key), majorKey);
     }
+*/
 
-    public static keyToIndex(key: number): number {
-        return ETC.commaToIndex(ETC.commaToNode(key));
+/*
+    private static keyRelation(keyA: number, keyB: number): number {
+        return ETC77.simplifyMajorKey(keyA + keyB);
     }
+*/
+/*
+    private static degreeOfPitch(pitch: ETC77Pitch, key: number = 0): number {
+        return ETC77.pitchToDegree(pitch, key);
+    }
+*/
 
-    public static transposeMajorByHalftones(key: number, halftones: number, octaveCalculations: boolean = false): number {
-        let transposedKey: number = ETC.simplifyMajorKey(ETC.sum(key, (((halftones*7) %12)+12)%12));
-        if (octaveCalculations){
-            transposedKey += (Math.floor(halftones / 12) * ETC.octaveSize);
-        }
-        return transposedKey;
+/*
+    private static transposeToClosestMajor(fromMajor: number, toMajor: number, octave: number): number {
+        return ETC77.directionsOfKeyRelation(fromMajor, toMajor).closest + (octave * ETC77.octaveSize);
     }
-
-    public static transposeCommaByHalftones(comma: number, halftones: number): number {
-        const octave: number = Math.floor(halftones / 12);
-        const sign: number = Math.sign(halftones) || 1;
-        const absHalftone: number = (((halftones * sign) % 12) + 12 ) % 12;
-        const transposeKey: Key = ( ETC.diatonicsIndexArray[absHalftone] * sign) + (octave * ETC.octaveSize);
-        return ETC.sum(comma, transposeKey);
+*/
+/*
+    private static transposeToUpperMajor(fromMajor: number, toMajor: number, octave: number): number {
+        return ETC77.directionsOfKeyRelation(fromMajor, toMajor).up + (octave * ETC77.octaveSize);
     }
-
-    public static transposeCommaByMajorKeyRelation(srcComma: Comma, majorKeyRelation: MajorKey): Comma {
-        return ETC.simplifyComma(ETC.sum(srcComma,majorKeyRelation));
+*/
+/*
+    private static transposeToLowerMajor(fromMajor: number, toMajor: number, octave: number): number {
+        return ETC77.directionsOfKeyRelation(fromMajor, toMajor).down + (octave * ETC77.octaveSize);
     }
-
-    public static transposeCommaToMajorKey(srcComma: Comma, majorKeyDestination: MajorKey): Comma {
-        return 0;
-    }
-
-    /**** */
-    public static floatToFraction(float: number, denominator: number = 1): string {
-        const numerator: number = Math.round(float * denominator);
-        return numerator + "/" + denominator;
-    }
-    public static test(): void{
-        for (let i: number = 0 ; i < Nodes.length ; i++) {
-            const comma: Node = Nodes[i];
-            comma.index = i;
-            comma.octave = 0;
-            comma.key = ETC.nodeToComma(comma);
-            console.log(comma);
-        }
-    }
+*/
+    /****************************************** END  DEAD CODE *********************************************/
 
 }
