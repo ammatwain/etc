@@ -86,10 +86,28 @@ export interface ETCPitch {
     octave: number;
 }
 
+
 export interface ETCDirections {
     up: number;
     closest: number;
     down: number;
+}
+
+export interface ETCKeyTransposeInstruction {
+    mainKey: number;
+    currentKey: number;
+    transposedkey: number;
+    trasposeBy: number;
+    trasposeMode: number;
+}
+
+export interface ETCPitchTransposeInstruction extends ETCKeyTransposeInstruction{
+    pitch: ETCPitch;
+    mainKey: number;
+    currentKey: number;
+    transposedkey: number;
+    trasposeBy: number;
+    trasposeMode: number;
 }
 
 export class ETC {
@@ -122,57 +140,57 @@ export class ETC {
     //private static majorCommas: number[]       = [ 70, 38,  6, 51, 19, 64, 32,  0, 45, 13, 58, 26, 71, 39,  7 ];
 
     public static commaIntervals: any = {
-        perfectOctaveUp:       +77,
-        diminishedOctaveUp:    +70,
-        augmentedSeventhUp:    +78,
-        majorSeventhUp:        +71,
-        minorSeventhUp:        +64,
-        diminishedSeventhUp:   +57,
-        augmentedSixthUp:      +65,
-        majorSixthUp:          +58,
-        minorSixthUp:          +51,
-        diminishedSixthUp:     +44,
-        augmentedFifthUp:      +52,
-        perfectFifthUp:        +45,
-        diminishedFifthUp:     +38,
-        augmentedFourthUp:     +39,
-        perfectFourthUp:       +32,
-        diminishedFourthUp:    +25,
-        augmentedThirdUp:      +33,
-        majorThirdUp:          +26,
-        minorThirdUp:          +19,
-        diminishedThirdUp:     +10,
-        augmentedSecondUp:     +20,
-        majorSecondUp:         +13,
-        minorSecondUp:          +6,
-        diminishedSecondUp:     -1,
-        augmentedUnisonUp:      +7,
-        perfectUnison:           0,
-        augmentedUnisonDown:    -7,
-        diminishedSecondDown:   -1,
-        minorSecondDown:        -6,
-        majorSecondDown:       -13,
-        augmentedSecondDown:   -20,
-        diminishedThirdDown:   -10,
-        minorThirdDown:        -19,
-        majorThirdDown:        -26,
-        augmentedThirdDown:    -33,
-        diminishedFourthDown:  -25,
-        perfectFourthDown:     -32,
-        augmentedFourthDown:   -39,
-        diminishedFifthDown:   -38,
-        perfectFifthDown:      -45,
-        augmentedFifthDown:    -52,
-        diminishedSixthDown:   -44,
-        minorSixthDown:        -51,
-        majorSixthDown:        -58,
-        augmentedSixthDown:    -65,
-        diminishedSeventhDown: -57,
-        minorSeventhDown:      -64,
-        majorSeventhDown:      -71,
-        augmentedSeventhDown:  -78,
-        diminishedOctaveDown:  -70,
-        perfectOctaveDown:     -77,
+        perfectOctaveAscending:       +77,
+        diminishedOctaveAscending:    +70,
+        augmentedSeventhAscending:    +78,
+        majorSeventhAscending:        +71,
+        minorSeventhAscending:        +64,
+        diminishedSeventhAscending:   +57,
+        augmentedSixthAscending:      +65,
+        majorSixthAscending:          +58,
+        minorSixthAscending:          +51,
+        diminishedSixthAscending:     +44,
+        augmentedFifthAscending:      +52,
+        perfectFifthAscending:        +45,
+        diminishedFifthAscending:     +38,
+        augmentedFourthAscending:     +39,
+        perfectFourthAscending:       +32,
+        diminishedFourthAscending:    +25,
+        augmentedThirdAscending:      +33,
+        majorThirdAscending:          +26,
+        minorThirdAscending:          +19,
+        diminishedThirdAscending:     +10,
+        augmentedSecondAscending:     +20,
+        majorSecondAscending:         +13,
+        minorSecondAscending:          +6,
+        diminishedSecondAscending:     -1,
+        augmentedUnisonAscending:      +7,
+        perfectUnison:                  0,
+        augmentedUnisonDescending:     -7,
+        diminishedSecondDescending:    -1,
+        minorSecondDescending:         -6,
+        majorSecondDescending:        -13,
+        augmentedSecondDescending:    -20,
+        diminishedThirdDescending:    -10,
+        minorThirdDescending:         -19,
+        majorThirdDescending:         -26,
+        augmentedThirdDescending:     -33,
+        diminishedFourthDescending:   -25,
+        perfectFourthDescending:      -32,
+        augmentedFourthDescending:    -39,
+        diminishedFifthDescending:    -38,
+        perfectFifthDescending:       -45,
+        augmentedFifthDescending:     -52,
+        diminishedSixthDescending:    -44,
+        minorSixthDescending:         -51,
+        majorSixthDescending:         -58,
+        augmentedSixthDescending:     -65,
+        diminishedSeventhDescending:  -57,
+        minorSeventhDescending:       -64,
+        majorSeventhDescending:       -71,
+        augmentedSeventhDescending:   -78,
+        diminishedOctaveDescending:   -70,
+        perfectOctaveDescending:      -77,
     };
 
     private static diatonicSemitones: number[] = [
@@ -205,7 +223,12 @@ export class ETC {
         ETC.commaIntervals.majorSeventhUp,
     ];
 
-    // Extended Euclid's algorithm to calculate GCD and Bézout coefficients
+    /**
+     * ***extendedEuclidean*** Extended Euclid's algorithm to calculate GCD and Bézout coefficients
+     * @param a number
+     * @param b number
+     * @returns [number,number,number]
+     */
     private static extendedEuclidean(a: number, b: number): [number,number,number] {
         if (b === 0) {
             return [a, 1, 0];
@@ -216,7 +239,12 @@ export class ETC {
         return [gcd, newX, newY];
     }
 
-    //Function to find the multiplicative inverse of "a" with respect to "m"
+    /**
+     * ***findInverse*** find the multiplicative inverse of "a" with respect to "m"
+     * @param a number
+     * @param m number
+     * @returns number
+     */
     private static findInverse(a: number, m: number): number {
         const gcd: [ number , number , number ] = ETC.extendedEuclidean( a , m );
         if (gcd[0] !== 1) {
@@ -229,23 +257,53 @@ export class ETC {
         return inverse;
     }
 
+    /**
+     * **keyOrigin** return the primitive original value of the the key
+     * @param key number
+     * @returns a number from 0 to 6
+     */
     private static keyOrigin(key: number): number{
         return (( key % 7 ) + 7 ) % 7;
     }
 
+    /**
+     * **keyFundamentalNote** return the semitonal value of the primitive value of key
+     * N.B.: int this context F is surclassed by F#
+     * @param key
+     * @returns number
+     */
     private static keyFundamentalNote(key: number): number {
         // in key context the value after 11 is 6, not 5
         return [0,7,2,9,4,11,6][ETC.keyOrigin(key)];
     }
 
+    /**
+     * **keyAlterations** return the alteration value of the key
+     * @param key
+     * @returns number
+     */
     private static keyAlterations(key: number): number {
         return Math.floor((key - ETC.keyOrigin(key)) / 7) || 0;
     }
 
+    /**
+     * **commaToDegree** returns a value representing the relationship of the comma to the key passed as a parameter.
+     * @param comma number
+     * @param majorKey number
+     * @returns number
+     */
     private static commaToDegree(comma: number, majorKey: number = 0): number{
         return comma - ETC.keyToComma(majorKey);
     }
 
+    /**
+     * **commaDistances** returns an object containing the distances between comma A and comma B.
+     * In particular, comma B is presented with two alternatives placed in different octaves,
+     * so that you can choose the most convenient direction to go from comma A to comma B.
+     * @param commaValueA number
+     * @param commaValueB number
+     * @returns ETCDirections
+     */
     private static commaDistances(commaValueA: number, commaValueB: number): ETCDirections{
         const directions: ETCDirections = {
             closest: commaValueA,
@@ -273,10 +331,20 @@ export class ETC {
 
     /******************************************** BEGIN PUBLIC *********************************************/
 
+    /**
+     * **OctaveSize** get the size of ocatve, expressed in comma
+     */
     public static get OctaveSize(): number {
         return ETC.octaveSize;
     }
 
+    /**
+     * **ETC.commaToDrawablePitch** search and select, among the available homophonic commas,
+     * the first one that has an absolute value of alterations equal to or less than 3
+     * compared to the comma passed as a parameter.
+     * @param comma
+     * @returns ETCPitch
+     */
     public static commaToDrawablePitch(comma: number ): ETCPitch{
         let pitch: ETCPitch;
         do {
@@ -290,6 +358,11 @@ export class ETC {
         return pitch;
     }
 
+    /**
+     * **ETC.commaToKey** return the scalar key value of the comma
+     * @param comma number
+     * @returns number
+     */
     public static commaToKey(comma: number): number {
         let octave: number = Math.floor(comma / ETC.octaveSize);
         comma = ((comma % ETC.octaveSize) + ETC.octaveSize) % ETC.octaveSize;
@@ -324,6 +397,13 @@ export class ETC {
         return ( octave * ETC.octaveSize ) + key;
     }
 
+    /**
+     * **ETC.commaToPitch** is one of ETC core functions.
+     * It converts the comma, which is a scalar value, to the pitch,
+     * which is a type of vector-like value.
+     * @param comma number
+     * @returns ETCPitch;
+     */
     public static commaToPitch(comma: number): ETCPitch {
         const gradus: number = ((comma % 7) + 7) %7;
         const fundamentalComma: number = ETC.inverseFundamentalCommas[gradus];
@@ -332,7 +412,6 @@ export class ETC {
         const octavedFundamentalComma: number = (octave * ETC.octaveSize) + fundamentalComma;
         const alterationsComma: number = comma - octavedFundamentalComma;
         let alterations: number = alterationsComma / 7;
-
         if (alterations<-5){
             alterations += 11;
             octave--;
@@ -340,9 +419,7 @@ export class ETC {
             alterations -= 11;
             octave++;
         }
-
         return {fundamentalNote: fundamentalNote , alterations: alterations, octave: octave };
-
     }
 
     public static chromaticSemitone(semitone: number): number {
@@ -478,4 +555,15 @@ export class ETC {
 */
     /****************************************** END  DEAD CODE *********************************************/
 
+/*
+    public transposeKey(trasposeMode: number = 0, transposedKey: number = 0, currentKey: number = 0, mainKey: number = 0): ETCKeyTransposeInstruction {
+        return {
+            mainKey: mainKey,
+            currentKey: currentKey,
+            transposedkey: transposedKey,
+            trasposeBy: 0,
+            trasposeMode: trasposeMode,
+        };
+    }
+*/
 }
