@@ -139,7 +139,7 @@ export class ETC {
     private static fundamentalAscendingNotes:   number[] = [ 0,  2,  4,  5,  7,  9, 11 ];
     private static fundamentalDescendingNotes:  number[] = [ 0, 11,  9,  7,  5,  4,  2 ];
     private static fundamentalAscendingCommas:  number[] = [ 0, 13, 26, 32, 45, 58, 71 ];
-    private static fundamentalDescendingCommas: number[] = [ 0, 71, 58, 45, 32, 26, 13 ] ;
+    private static fundamentalDescendingCommas: number[] = [ 0, 71, 58, 45, 32, 26, 13 ];
 
 
     private static octaveSize: number = 77;
