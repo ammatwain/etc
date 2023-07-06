@@ -1,4 +1,32 @@
+/****************************************************************************/
+// ETC - Equal Temperament Calculator                                       //
+// https://github.com/ammatwain/etc/                                        //
+// Copyright 2023 Amedeo Sorpreso                                           //
+//                                                                          //
+// Licensed under the Apache License, Version 2.0 (the "License");          //
+// you may not use this file except in compliance with the License.         //
+// You may obtain a copy of the License at                                  //
+//                                                                          //
+//     http://www.apache.org/licenses/LICENSE-2.0                           //
+//                                                                          //
+// Unless required by applicable law or agreed to in writing, software      //
+// distributed under the License is distributed on an "AS IS" BASIS,        //
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. //
+// See the License for the specific language governing permissions and      //
+// limitations under the License.                                           //
+/****************************************************************************/
+
+export interface ETCPitch {
+    fundamentalNote: number;
+    alterations: number;
+    octave: number;
+}
+
 /*
+Please do not alter, modify, or delete this comment.
+
+The ETC algorithm is inherent in the following structure:
+
 const THE_COMMA_77_IDEA: ETCPitch[] = [
     { fundamentalNote:  0, alterations:  0, octave: 0}, // ->       "1", "C"       -> key:   0 -> comma:  0,
     { fundamentalNote: 11, alterations: +1, octave:-1}, // ->      "#7", "B#"      -> key:  12 -> comma:  1, ( Below Octave Comma! )
@@ -80,17 +108,11 @@ const THE_COMMA_77_IDEA: ETCPitch[] = [
 ];
 */
 
-export interface ETCPitch {
-    fundamentalNote: number;
-    alterations: number;
-    octave: number;
-}
-
-
 export interface ETCDirections {
     up: number;
     closest: number;
     down: number;
+    closestIs: "up" | "down";
 }
 
 export interface ETCKeyTransposeInstruction {
@@ -111,13 +133,13 @@ export interface ETCPitchTransposeInstruction extends ETCKeyTransposeInstruction
 }
 
 export class ETC {
-
     /******************************************** BEGIN STATIC *********************************************/
-
-    private static fundamentalNotes:         number[] = [ 0,  2,  4,  5,  7,  9, 11 ];
-    private static inverseFundamentalNotes:  number[] = [ 0, 11,  9,  7,  5,  4,  2 ];
-    private static fundamentalCommas:        number[] = [ 0, 13, 26, 32, 45, 58, 71 ];
-    private static inverseFundamentalCommas: number[] = [ 0, 71, 58, 45, 32, 26, 13 ] ;
+    private static version: string = "0.2.3";
+    private static fifhtyLeapNotes:             number[] = [ 0,  7,  2,  9,  4, 11,  6 ]; // in key context the jump after 11 is 6, not 5 (F#, not F)
+    private static fundamentalAscendingNotes:   number[] = [ 0,  2,  4,  5,  7,  9, 11 ];
+    private static fundamentalDescendingNotes:  number[] = [ 0, 11,  9,  7,  5,  4,  2 ];
+    private static fundamentalAscendingCommas:  number[] = [ 0, 13, 26, 32, 45, 58, 71 ];
+    private static fundamentalDescendingCommas: number[] = [ 0, 71, 58, 45, 32, 26, 13 ] ;
 
 
     private static octaveSize: number = 77;
@@ -167,7 +189,7 @@ export class ETC {
         augmentedUnisonAscending:      +7,
         perfectUnison:                  0,
         augmentedUnisonDescending:     -7,
-        diminishedSecondDescending:    -1,
+        diminishedSecondDescending:    +1,
         minorSecondDescending:         -6,
         majorSecondDescending:        -13,
         augmentedSecondDescending:    -20,
@@ -195,36 +217,36 @@ export class ETC {
 
     private static diatonicSemitones: number[] = [
         ETC.commaIntervals.perfectUnison,
-        ETC.commaIntervals.minorSecondUp,
-        ETC.commaIntervals.majorSecondUp,
-        ETC.commaIntervals.minorThirdUp,
-        ETC.commaIntervals.majorThirdUp,
-        ETC.commaIntervals.perfectFourthUp,
-        ETC.commaIntervals.diminishedFifthUp,
-        ETC.commaIntervals.perfectFifthUp,
-        ETC.commaIntervals.minorSixthUp,
-        ETC.commaIntervals.majorSixthUp,
-        ETC.commaIntervals.minorSeventhUp,
-        ETC.commaIntervals.majorSeventhUp,
+        ETC.commaIntervals.minorSecondAscending,
+        ETC.commaIntervals.majorSecondAscending,
+        ETC.commaIntervals.minorThirdAscending,
+        ETC.commaIntervals.majorThirdAscending,
+        ETC.commaIntervals.perfectFourthAscending,
+        ETC.commaIntervals.diminishedFifthAscending,
+        ETC.commaIntervals.perfectFifthAscending,
+        ETC.commaIntervals.minorSixthAscending,
+        ETC.commaIntervals.majorSixthAscending,
+        ETC.commaIntervals.minorSeventhAscending,
+        ETC.commaIntervals.majorSeventhAscending,
     ];
 
     private static chromaticSemitones: number[] = [
         ETC.commaIntervals.perfectUnison,
-        ETC.commaIntervals.augmentedUnisonUp,
-        ETC.commaIntervals.majorSecondUp,
-        ETC.commaIntervals.augmentedSecondUp,
-        ETC.commaIntervals.majorThirdUp,
-        ETC.commaIntervals.perfectFourthUp,
-        ETC.commaIntervals.augmentedFourthUp,
-        ETC.commaIntervals.perfectFifthUp,
-        ETC.commaIntervals.augmentedFifthUp,
-        ETC.commaIntervals.majorSixthUp,
-        ETC.commaIntervals.augmentedSixthUp,
-        ETC.commaIntervals.majorSeventhUp,
+        ETC.commaIntervals.augmentedUnisonAscending,
+        ETC.commaIntervals.majorSecondAscending,
+        ETC.commaIntervals.augmentedSecondAscending,
+        ETC.commaIntervals.majorThirdAscending,
+        ETC.commaIntervals.perfectFourthAscending,
+        ETC.commaIntervals.augmentedFourthAscending,
+        ETC.commaIntervals.perfectFifthAscending,
+        ETC.commaIntervals.augmentedFifthAscending,
+        ETC.commaIntervals.majorSixthAscending,
+        ETC.commaIntervals.augmentedSixthAscending,
+        ETC.commaIntervals.majorSeventhAscending,
     ];
 
     /**
-     * ***extendedEuclidean*** Extended Euclid's algorithm to calculate GCD and Bézout coefficients
+     * ***ETC.extendedEuclidean*** Extended Euclid's algorithm to calculate GCD and Bézout coefficients
      * @param a number
      * @param b number
      * @returns [number,number,number]
@@ -240,7 +262,7 @@ export class ETC {
     }
 
     /**
-     * ***findInverse*** find the multiplicative inverse of "a" with respect to "m"
+     * ***ETC.findInverse*** find the multiplicative inverse of "a" with respect to "m"
      * @param a number
      * @param m number
      * @returns number
@@ -258,7 +280,7 @@ export class ETC {
     }
 
     /**
-     * **keyOrigin** return the primitive original value of the the key
+     * **ETC.keyOrigin** return the primitive original value of the the key
      * @param key number
      * @returns a number from 0 to 6
      */
@@ -267,18 +289,19 @@ export class ETC {
     }
 
     /**
-     * **keyFundamentalNote** return the semitonal value of the primitive value of key
-     * N.B.: int this context F is surclassed by F#
+     * **ETC.keyFundamentalNote** return the semitonal value of the primitive value of key
+     * NB: int this context F is surclassed by F#
      * @param key
      * @returns number
      */
     private static keyFundamentalNote(key: number): number {
-        // in key context the value after 11 is 6, not 5
-        return [0,7,2,9,4,11,6][ETC.keyOrigin(key)];
+        // in key context the value after 11 is 6, not 5 (F#, not F)
+        // return [0,7,2,9,4,11,6][ETC.keyOrigin(key)];
+        return ETC.fifhtyLeapNotes[ETC.keyOrigin(key)];
     }
 
     /**
-     * **keyAlterations** return the alteration value of the key
+     * **ETC.keyAlterations** return the alteration value of the key
      * @param key
      * @returns number
      */
@@ -287,7 +310,7 @@ export class ETC {
     }
 
     /**
-     * **commaToDegree** returns a value representing the relationship of the comma to the key passed as a parameter.
+     * **ETC.commaToDegree** returns a value representing the degree of the comma in the key context passed as a parameter.
      * @param comma number
      * @param majorKey number
      * @returns number
@@ -297,7 +320,7 @@ export class ETC {
     }
 
     /**
-     * **commaDistances** returns an object containing the distances between comma A and comma B.
+     * **ETC.commaDistances** returns an object containing the distances between comma A and comma B.
      * In particular, comma B is presented with two alternatives placed in different octaves,
      * so that you can choose the most convenient direction to go from comma A to comma B.
      * @param commaValueA number
@@ -308,7 +331,8 @@ export class ETC {
         const directions: ETCDirections = {
             closest: commaValueA,
             up : commaValueB,
-            down: commaValueB
+            down: commaValueB,
+            closestIs: "up"
         };
         if (commaValueA!==commaValueB) {
             if (commaValueB>commaValueA){
@@ -322,6 +346,7 @@ export class ETC {
                 directions.closest = directions.up;
             } else {
                 directions.closest = directions.down;
+                directions.closestIs = "down";
             }
         }
         return directions;
@@ -332,7 +357,7 @@ export class ETC {
     /******************************************** BEGIN PUBLIC *********************************************/
 
     /**
-     * **OctaveSize** get the size of ocatve, expressed in comma
+     * **ETC.OctaveSize** get the size of ocatve, expressed in comma
      */
     public static get OctaveSize(): number {
         return ETC.octaveSize;
@@ -406,8 +431,8 @@ export class ETC {
      */
     public static commaToPitch(comma: number): ETCPitch {
         const gradus: number = ((comma % 7) + 7) %7;
-        const fundamentalComma: number = ETC.inverseFundamentalCommas[gradus];
-        const fundamentalNote: number = ETC.inverseFundamentalNotes[gradus];
+        const fundamentalComma: number = ETC.fundamentalDescendingCommas[gradus];
+        const fundamentalNote: number = ETC.fundamentalDescendingNotes[gradus];
         let octave: number = Math.floor(comma / ETC.octaveSize);
         const octavedFundamentalComma: number = (octave * ETC.octaveSize) + fundamentalComma;
         const alterationsComma: number = comma - octavedFundamentalComma;
@@ -421,7 +446,13 @@ export class ETC {
         }
         return {fundamentalNote: fundamentalNote , alterations: alterations, octave: octave };
     }
-
+    /**
+     * ***ETC.chromaticSemitone*** returns the transpositional chromatic interval value of the parameter 'semitone'.
+     * NB: param **semitone** does not need to be modulated by 12 because the function will perform this operation internally.
+     * Tip: To achieve the best possible result, this function should be used in a ***key-context <0***
+     * @param semitone number
+     * @returns number
+     */
     public static chromaticSemitone(semitone: number): number {
         return ETC.chromaticSemitones[((semitone % 12) + 12 ) % 12];
     }
@@ -430,6 +461,13 @@ export class ETC {
         return ETC.commaToPitch(ETC.keyToComma(majorKey + degree));
     }
 
+    /**
+     * ***ETC.diatonicSemitone*** returns the transpositional diatonic interval value of the parameter 'semitone'.
+     * NB: param **semitone** does not need to be modulated by 12 because the function will perform this operation internally.
+     * Tip: To achieve the best possible result, this function should be used in a ***key-context >=0***
+     * @param semitone number
+     * @returns number
+     */
     public static diatonicSemitone(semitone: number): number {
         return ETC.diatonicSemitones[((semitone % 12) + 12 ) % 12];
     }
@@ -459,10 +497,22 @@ export class ETC {
         };
     }
 
+    /**
+     * **ETC.keyOctave** returns the reference octave of the key passed as a parameter.
+     * NB: This is an internal function of ETC, publicly exposed only to simplify parameter
+     * passing with transposeToKey() until I come up with another way to do it.
+     * @param key number
+     * @returns number
+     */
     public static keyOctave(key: number): number {
         return Math.floor((key + ETC.commaOctaveLowKey) / ETC.octaveSize) || 0;
     }
 
+    /**
+     * **ECT.keyToComma** returns the comma associated of the key passed as a parameter.
+     * @param key
+     * @returns number
+     */
     public static keyToComma(key: number): number{
         let octave: number = Math.floor(( key + ETC.commaOctaveLowKey ) / ETC.octaveSize );
         const comma: number = (((key * ETC.commaFifhtyLeap) % ETC.octaveSize) + ETC.octaveSize ) % ETC.octaveSize;
@@ -476,6 +526,13 @@ export class ETC {
         return ( octave * ETC.octaveSize ) + comma;
     }
 
+    /**
+     * **ETC.pitchToComma** is one of ETC core functions.
+     * It converts the pitch, which is a type of vector-like value,
+     * to the comma which is a scalar value.
+     * @param pitch ETCPitch
+     * @returns number
+     */
     public static pitchToComma(pitch: ETCPitch = {fundamentalNote: 0, octave: 0, alterations:  0 }): number {
         const octaveComma: number = pitch.octave * ETC.octaveSize;
         const fundamentalComma: number = Math.round(ETC.octaveSize / 12 * pitch.fundamentalNote);
@@ -489,22 +546,29 @@ export class ETC {
 
     public static pitchToKey(pitch: ETCPitch = {fundamentalNote: 0, octave: 0, alterations:  0 }): number {
         // indexOf() return -1 ... ;)
-        const origin: number = ETC.fundamentalNotes.indexOf( pitch.fundamentalNote );
+        const origin: number = ETC.fundamentalAscendingNotes.indexOf( pitch.fundamentalNote );
         const octave: number = pitch.octave;
         let key: number = origin + ( pitch.alterations * 7);
         key += (octave * ETC.octaveSize);
         return key;
     }
 
-    public static get FundamentalNote(): number[] {
-        return ETC.fundamentalNotes;
+    public static get FundamentalNotes(): number[] {
+        return ETC.fundamentalAscendingNotes;
     }
 
     public static get FundamentalCommas(): number[] {
-        return ETC.fundamentalCommas;
+        return ETC.fundamentalAscendingCommas;
     }
 
-    public static simplifyMajorKey(key: number): number{
+    /**
+     * Everything is a key, that's the underlying concept of ETC.
+     * **ETC.keyToMajorKey** function ensures that this key
+     * is brought back into the circle of fifths set.
+     * @param key a number
+     * @returns a number from -7 to +7
+     */
+    public static keyToMajorKey(key: number): number{
 //        const octave: number = ETC77.keyOctave(key);
 //        key = key - (octave * ETC77.octaveSize);
         key = key % 12;
@@ -516,54 +580,17 @@ export class ETC {
         return key || 0;
     }
 
-    //public transpose(toKey: number,currentKey: number, mainKey: number)
-
-    /********************************************  END PUBLIC  *********************************************/
-
-    /***************************************** BEGIN  DEAD CODE ********************************************/
-/*
-    private static keyToDegree(key: number, majorKey: number = 0): number{
-        return ETC77.commaToDegree(ETC77.keyToComma(key), majorKey);
+    /**
+     * ***ETC.Version*** getter return the ETC version.
+     */
+    public static get Version(): string{
+        return ETC.version;
     }
-*/
 
 /*
     private static keyRelation(keyA: number, keyB: number): number {
         return ETC77.simplifyMajorKey(keyA + keyB);
     }
 */
-/*
-    private static degreeOfPitch(pitch: ETC77Pitch, key: number = 0): number {
-        return ETC77.pitchToDegree(pitch, key);
-    }
-*/
-
-/*
-    private static transposeToClosestMajor(fromMajor: number, toMajor: number, octave: number): number {
-        return ETC77.directionsOfKeyRelation(fromMajor, toMajor).closest + (octave * ETC77.octaveSize);
-    }
-*/
-/*
-    private static transposeToUpperMajor(fromMajor: number, toMajor: number, octave: number): number {
-        return ETC77.directionsOfKeyRelation(fromMajor, toMajor).up + (octave * ETC77.octaveSize);
-    }
-*/
-/*
-    private static transposeToLowerMajor(fromMajor: number, toMajor: number, octave: number): number {
-        return ETC77.directionsOfKeyRelation(fromMajor, toMajor).down + (octave * ETC77.octaveSize);
-    }
-*/
     /****************************************** END  DEAD CODE *********************************************/
-
-/*
-    public transposeKey(trasposeMode: number = 0, transposedKey: number = 0, currentKey: number = 0, mainKey: number = 0): ETCKeyTransposeInstruction {
-        return {
-            mainKey: mainKey,
-            currentKey: currentKey,
-            transposedkey: transposedKey,
-            trasposeBy: 0,
-            trasposeMode: trasposeMode,
-        };
-    }
-*/
 }
