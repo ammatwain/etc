@@ -129,7 +129,7 @@ export interface ETCPitchTransposeInstruction extends ETCKeyTransposeInstruction
 */
 export class ETC {
     /******************************************** BEGIN PRIVATE *********************************************/
-    private static version: string = "0.2.4";
+    private static version: string = "0.2.5";
     private static fifhtyLeapNotes:             number[] = [ 0,  7,  2,  9,  4, 11,  6 ]; // in key context the jump after 11 is 6, not 5 (F#, not F)
     private static fundamentalAscendingNotes:   number[] = [ 0,  2,  4,  5,  7,  9, 11 ];
     private static fundamentalDescendingNotes:  number[] = [ 0, 11,  9,  7,  5,  4,  2 ];
@@ -618,12 +618,27 @@ export class ETC {
      * @returns a number from -7 to +7
      */
     public static keyToMajorKey(key: number): number{
-//        const octave: number = ETC77.keyOctave(key);
-//        key = key - (octave * ETC77.octaveSize);
         key = key % 12;
         if (key< -7){
-            key -= -12;
+            key += 12;
         } else if (key > 7) {
+            key -= 12;
+        }
+        return key || 0;
+    }
+
+    /**
+     * Everything is a key, that's the underlying concept of ETC.
+     * **ETC.keyToSimplifiedMajorKey**  method returns a simplified MajorKey within the range of -6 to 5
+     * is brought back into the circle of fifths set.
+     * @param key a number
+     * @returns a number from -5 to +6
+     */
+    public static keyToSimplifiedMajorKey(key: number): number{
+        key = key % 12;
+        if (key< -5){
+            key += 12;
+        } else if (key > 6) {
             key -= 12;
         }
         return key || 0;
